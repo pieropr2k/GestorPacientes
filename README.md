@@ -6,7 +6,7 @@ Esta es una aplicacion para gestionar las citas que tenemos con los pacientes
 
 ```sh
 git clone 
-cd mern-tasks-auth
+cd app-salud
 npm i
 npm run build
 npm start
