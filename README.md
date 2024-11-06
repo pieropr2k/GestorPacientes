@@ -7,7 +7,11 @@ Esta es una aplicacion para gestionar las citas que tenemos con los pacientes
 ```sh
 git clone 
 cd app-salud
-npm i
-npm run build
-npm start
+npm install
+## npm run build
+## Para correr la API:
+npm run dev
+## Para correr el frontend:
+cd client
+npm run dev
 ```

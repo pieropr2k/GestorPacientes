@@ -7,6 +7,7 @@ const AuthContext = createContext();
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
+  console.log(context)
   if (!context) throw new Error("useAuth must be used within a AuthProvider");
   return context;
 };
@@ -31,6 +32,10 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await registerRequest(user);
       if (res.status === 200) {
+        Cookies.set('token', res.data.token);
+        console.log(res.data.token)
+        console.log(Cookies)
+        
         setUser(res.data);
         setIsAuthenticated(true);
       }
@@ -43,6 +48,10 @@ export const AuthProvider = ({ children }) => {
   const signin = async (user) => {
     try {
       const res = await loginRequest(user);
+      Cookies.set('token', res.data.token);
+        //console.log(res.data.token)
+        //console.log(res.data)
+        //console.log(Cookies)
       setUser(res.data);
       setIsAuthenticated(true);
     } catch (error) {
@@ -57,15 +66,27 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
   };
 
+
   useEffect(() => {
-    const checkLogin = async () => {
+    //console.log('before useefffect');
+    const checkLogin = async () => {    
       const cookies = Cookies.get();
+      const token = localStorage.getItem('token');
+      console.log(cookies, "token front");
+      console.log(token, "token front");
+      console.log(Cookies.get('token'), "token frontxx");
+      
+      console.log(Cookies, "token front");
+      console.log(cookies.token, "token front");
+      
       if (!cookies.token) {
+        
         setIsAuthenticated(false);
         setLoading(false);
         return;
       }
-
+      console.log(cookies.token, "token front");
+  
       try {
         const res = await verifyTokenRequest(cookies.token);
         console.log(res);
@@ -79,6 +100,7 @@ export const AuthProvider = ({ children }) => {
       }
     };
     checkLogin();
+    //console.log('after');
   }, []);
 
   return (
