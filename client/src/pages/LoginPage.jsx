@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, Message, Button, Input, Label } from "../components/ui";
 import { loginSchema } from "../schemas/auth";
 
-export function LoginPage() {
+export default function LoginPage() {
   const {
     register,
     handleSubmit,

@@ -19,7 +19,8 @@ export const register = async (req, res) => {
         //console.log(token);
         res.cookie("token", token, {
             //httpOnly: true,
-            httpOnly: process.env.NODE_ENV !== "development",
+            httpOnly: false,
+            //process.env.NODE_ENV !== "development",
             secure: true,
             //sameSite: "strict",
             sameSite: "none",
@@ -43,8 +44,8 @@ export const login = async (req, res) => {
         const token = await createAccessToken({ id: userFound.id });
 
         res.cookie("token", token, {
-            //httpOnly: true,  
-            httpOnly: process.env.NODE_ENV !== "development",
+            httpOnly: false,
+            //httpOnly: process.env.NODE_ENV !== "development",
             secure: true,
             //sameSite: "strict",
             sameSite: "none",

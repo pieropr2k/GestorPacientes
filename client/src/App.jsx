@@ -1,36 +1,51 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Navbar } from "./components/Navbar";
-import { AuthProvider } from "./context/authContext";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider, useAuth } from "./context/authContext";
 import { ProtectedRoute } from "./routes";
 
+//import { ClientLayout } from "./layouts/ClientLayout";
+//import { DoctorLayout } from "./layouts/DoctorLayout";
+
+import AppointmentsPage from "./pages/AppointmentsPage";
+import MedicalHistoryPage from "./pages/MedicalHistoryPage";
+import DoctorsListPage from "./pages/DoctorsListPage";
+import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
-import RegisterPage from "./pages/RegisterPage";
-import { AppointmentFormPage } from "./pages/AppointmentFormPage";
-import { LoginPage } from "./pages/LoginPage";
-import { AppointmentsPage } from "./pages/AppointmentsPage";
-import { AppointmentProvider } from "./context/appointmentsContext";
+import Register from "./pages/RegisterPage";
+import DoctorLayout from "./DoctorLayout";
+import ClientLayout from "./ClientLayout";
+import AppointmentsManagement from "./pages/doctor/AppointmentsManagement";
+import AppointmentGestor from "./pages/doctor/AppointmentGestor";
+import AppointmentsList from "./pages/doctor/AppointmentsList";
 
 function App() {
   return (
     <AuthProvider>
-      <AppointmentProvider>
-        <BrowserRouter>
-          <main className="container content-container mx-auto px-10 md:px-0">
-            <Navbar />
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route element={<ProtectedRoute />}>
-                <Route path="/appointments" element={<AppointmentsPage />} />
-                <Route path="/add-appointment" element={<AppointmentFormPage />} />
-                <Route path="/appointments/:id" element={<AppointmentFormPage />} />
-                <Route path="/profile" element={<h1>Profile</h1>} />
-              </Route>
-            </Routes>
-          </main>
-        </BrowserRouter>
-      </AppointmentProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Rutas públicas */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<Register />} />
+
+          {/* Rutas protegidas por rol */}
+          <Route element={<ProtectedRoute />}>
+            {/* Rutas para Clientes */}
+            <Route path="/client" element={<ClientLayout/>}>
+              <Route path="appointments" element={<AppointmentsPage />} />
+              <Route path="medical-history" element={<MedicalHistoryPage />} />
+              <Route path="search-doctor" element={<DoctorsListPage />} />
+            </Route>
+
+            {/* Rutas para Doctores */}
+            <Route path="/doctor" element={<DoctorLayout />}>
+              <Route path="appointments-man" element={<AppointmentsManagement />} />
+              <Route path="appointments" element={<AppointmentsList />} />
+              <Route path="appointments/info" element={<AppointmentGestor />} />
+              {/* Agrega más rutas específicas para doctores */}
+            </Route>
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </AuthProvider>
   );
 }
