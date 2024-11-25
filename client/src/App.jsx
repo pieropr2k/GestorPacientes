@@ -5,9 +5,9 @@ import { ProtectedRoute } from "./routes";
 //import { ClientLayout } from "./layouts/ClientLayout";
 //import { DoctorLayout } from "./layouts/DoctorLayout";
 
-import AppointmentsPage from "./pages/AppointmentsPage";
-import MedicalHistoryPage from "./pages/MedicalHistoryPage";
-import DoctorsListPage from "./pages/DoctorsListPage";
+import AppointmentsPage from "./pages/pacient/AppointmentsPage";
+import MedicalHistoryPage from "./pages/pacient/MedicalHistoryPage";
+import DoctorsListPage from "./pages/pacient/DoctorsListPage";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import Register from "./pages/RegisterPage";
