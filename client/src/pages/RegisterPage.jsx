@@ -22,7 +22,7 @@ function Register() {
   };
 
   useEffect(() => {
-    if (isAuthenticated) navigate("/appointments");
+    if (isAuthenticated) navigate("/client/appointments");
   }, [isAuthenticated]);
 
   return (

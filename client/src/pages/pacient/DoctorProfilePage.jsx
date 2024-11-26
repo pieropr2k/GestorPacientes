@@ -1,6 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import { useDoctors } from "../../context/doctorsContext";
 
 const DoctorProfilePage = ({ doctor }) => {
+  const { getOneDoctor } = useDoctors();
+  //console.log(getOneDoctor())
+  const params = useParams();
+  //const doc = await getOneDoctor(params.id)
+  //console.log(doc)
+
   const doctorData = {
     nombres: "Juan",
     apellidos: "Pérez Gómez",
@@ -31,6 +39,17 @@ const DoctorProfilePage = ({ doctor }) => {
     ],
   };
   doctor = doctorData;  
+
+  useEffect(() => {
+    const loadDoctor = async () => {
+      if (params.id) {
+        const doctor = await getOneDoctor(params.id);
+        console.log(doctor);
+      }
+    };
+    loadDoctor();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-100 p-8 flex flex-col items-center">
       <div className="bg-white shadow-lg rounded-lg p-6 max-w-3xl w-full">
@@ -94,11 +113,17 @@ const DoctorProfilePage = ({ doctor }) => {
         </div>
 
         {/* Appointment Button */}
+        <Link
+        to={`./create-appointment`}
+        key={params.id}
+        >
         <div className="flex justify-center">
           <button className="bg-blue-500 text-white py-2 px-6 rounded-lg shadow-lg hover:bg-blue-600 transition duration-300">
             Hacer una cita
           </button>
         </div>
+        </Link>
+        
       </div>
     </div>
   );

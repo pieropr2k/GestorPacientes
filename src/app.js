@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 
 import authRoutes from "./routes/auth.routes.js";
 import appointmentsRoutes from "./routes/appointments.routes.js";
+import doctorsRoutes from "./routes/doctors.routes.js";
 import { FRONTEND_URL } from "./config.js";
 
 const app = express();
@@ -21,5 +22,6 @@ app.use(morgan("dev"));
 
 app.use("/api/auth", authRoutes);
 app.use("/api", appointmentsRoutes);
+app.use("/api", doctorsRoutes);
 
 export default app;

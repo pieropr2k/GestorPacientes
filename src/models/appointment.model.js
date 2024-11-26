@@ -3,11 +3,20 @@ import db from "../database.js";
 const AppointmentModel = {
   // Crear una cita
   createAppointment: (appointment) => {
-    //console.log(appointment);
-    //console.log("appointment");
     return new Promise((resolve, reject) => {
-      const query = `INSERT INTO appointments (title, description, date, user_id) VALUES (?, ?, ?, ?)`;
-      const params = [appointment.title, appointment.description, appointment.date, appointment.user_id];
+      const query = `
+        INSERT INTO appointments (doctor_id, patient_id, consultation_reason, description, state, date_time)
+        VALUES (?, ?, ?, ?, ?, ?)
+      `;
+      const params = [
+        appointment.doctor_id,
+        appointment.patient_id,
+        appointment.consultation_reason,
+        appointment.description,
+        appointment.state,
+        appointment.date_time
+      ];
+      
       db.run(query, params, function (err) {
         if (err) {
           return reject(err);
@@ -17,19 +26,35 @@ const AppointmentModel = {
     });
   },
 
-  // Obtener todas las citas
-  getAllAppointments: (userId) => {
+  // Obtener todas las citas de un paciente
+  getAppointmentsByPatient: (patientId) => {
     return new Promise((resolve, reject) => {
       const query = `
         SELECT appointments.* FROM appointments
-        WHERE appointments.user_id = ?
+        WHERE appointments.patient_id = ?
       `;
       
-      db.all(query, [userId], (err, rows) => {
+      db.all(query, [patientId], (err, rows) => {
         if (err) {
           return reject(err);
         }
-        console.log(rows);
+        resolve(rows);
+      });
+    });
+  },
+
+  // Obtener todas las citas de un doctor
+  getAppointmentsByDoctor: (doctorId) => {
+    return new Promise((resolve, reject) => {
+      const query = `
+        SELECT appointments.* FROM appointments
+        WHERE appointments.doctor_id = ?
+      `;
+      
+      db.all(query, [doctorId], (err, rows) => {
+        if (err) {
+          return reject(err);
+        }
         resolve(rows);
       });
     });
@@ -41,6 +66,7 @@ const AppointmentModel = {
       const query = `
         SELECT appointments.* FROM appointments WHERE appointments.id = ?
       `;
+      
       db.get(query, [id], (err, row) => {
         if (err) {
           return reject(err);
@@ -52,10 +78,22 @@ const AppointmentModel = {
 
   // Actualizar una cita
   updateAppointment: (id, appointment) => {
-    console.log('updateAppointment', id, appointment);
     return new Promise((resolve, reject) => {
-      const query = `UPDATE appointments SET title = ?, description = ?, date = ?, user_id = ? WHERE id = ?`;
-      const params = [appointment.title, appointment.description, appointment.date, appointment.user_id, id];
+      const query = `
+        UPDATE appointments
+        SET doctor_id = ?, patient_id = ?, consultation_reason = ?, description = ?, state = ?, date_time = ?
+        WHERE id = ?
+      `;
+      const params = [
+        appointment.doctor_id,
+        appointment.patient_id,
+        appointment.consultation_reason,
+        appointment.description,
+        appointment.state,
+        appointment.date_time,
+        id
+      ];
+      
       db.run(query, params, function (err) {
         if (err) {
           return reject(err);

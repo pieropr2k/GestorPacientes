@@ -1,142 +1,154 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useDoctors } from "../../context/doctorsContext";
+//import { useDoctors } from "../../context/doctorsContext";
 
-const doctorsData = [
+let doctorsData = [
   {
     id: 1,
-    nombreCompleto: "Dr. Juan Pérez Gómez",
-    especialidad: "Cardiología",
-    ubicacion: "Los Olivos",
-    experiencia: 10,
-    calificacion: 4.8,
-    opiniones: 45,
-    tarifa: 50,
-    foto: "https://via.placeholder.com/150"
+    fullName: "Dr. Juan Pérez Gómez",
+    specialty: "Cardiology",
+    location: "Los Olivos",
+    experience: 10,
+    rating: 4.8,
+    reviews: 45,
+    fee: 50,
+    photo: "https://via.placeholder.com/150"
   },
   {
     id: 2,
-    nombreCompleto: "Dra. Ana García López",
-    especialidad: "Dermatología",
-    ubicacion: "Miraflores",
-    experiencia: 8,
-    calificacion: 4.6,
-    opiniones: 30,
-    tarifa: 80,
-    foto: "https://via.placeholder.com/150"
+    fullName: "Dr. Ana García López",
+    specialty: "Dermatology",
+    location: "Miraflores",
+    experience: 8,
+    rating: 4.6,
+    reviews: 30,
+    fee: 80,
+    photo: "https://via.placeholder.com/150"
   },
   {
     id: 3,
-    nombreCompleto: "Dr. Carlos Fernández",
-    especialidad: "Pediatría",
-    ubicacion: "San Isidro",
-    experiencia: 12,
-    calificacion: 4.9,
-    opiniones: 60,
-    tarifa: 70,
-    foto: "https://via.placeholder.com/150"
+    fullName: "Dr. Carlos Fernández",
+    specialty: "Pediatrics",
+    location: "San Isidro",
+    experience: 12,
+    rating: 4.9,
+    reviews: 60,
+    fee: 70,
+    photo: "https://via.placeholder.com/150"
   },
   {
     id: 4,
-    nombreCompleto: "Dra. María Torres",
-    especialidad: "Ginecología",
-    ubicacion: "Surco",
-    experiencia: 6,
-    calificacion: 4.7,
-    opiniones: 50,
-    tarifa: 60,
-    foto: "https://via.placeholder.com/150"
+    fullName: "Dr. María Torres",
+    specialty: "Gynecology",
+    location: "Surco",
+    experience: 6,
+    rating: 4.7,
+    reviews: 50,
+    fee: 60,
+    photo: "https://via.placeholder.com/150"
   }
 ];
 
 const DoctorsListPage = () => {
-  const [especialidad, setEspecialidad] = useState("");
-  const [calificacionMinima, setCalificacionMinima] = useState(0);
-  const [precioMin, setPrecioMin] = useState("");
-  const [precioMax, setPrecioMax] = useState("");
-  const [orden, setOrden] = useState({
-    precioMayor: false,
-    precioMenor: false,
-    alfabeticoAZ: false,
-    alfabeticoZA: false,
-    calificacionMayor: false,
-    calificacionMenor: false
+  
+  const { doctors, getDoctors } = useDoctors();
+  doctorsData = doctors;
+  console.log(doctors, "doctores")
+
+  useEffect(() => {
+    getDoctors();
+  }, []);
+  
+
+  const [specialty, setSpecialty] = useState("");
+  const [minRating, setMinRating] = useState(0);
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+  const [order, setOrder] = useState({
+    priceHigh: false,
+    priceLow: false,
+    alphabeticalAZ: false,
+    alphabeticalZA: false,
+    ratingHigh: false,
+    ratingLow: false
   });
 
-  const filtrarDoctores = () => {
-    let doctoresFiltrados = [...doctorsData];
+  const filterDoctors = () => {
+    let filteredDoctors = [...doctorsData];
 
-    if (especialidad) {
-      doctoresFiltrados = doctoresFiltrados.filter((doctor) =>
-        doctor.especialidad.toLowerCase().includes(especialidad.toLowerCase())
+    if (specialty) {
+      filteredDoctors = filteredDoctors.filter((doctor) =>
+        doctor.specialty.toLowerCase().includes(specialty.toLowerCase())
       );
     }
 
-    if (calificacionMinima > 0) {
-      doctoresFiltrados = doctoresFiltrados.filter((doctor) => doctor.calificacion >= calificacionMinima);
+    if (minRating > 0) {
+      filteredDoctors = filteredDoctors.filter((doctor) => doctor.rating >= minRating);
     }
 
-    if (precioMin || precioMax) {
-      doctoresFiltrados = doctoresFiltrados.filter((doctor) => {
-        const cumpleMin = precioMin ? doctor.tarifa >= Number(precioMin) : true;
-        const cumpleMax = precioMax ? doctor.tarifa <= Number(precioMax) : true;
-        return cumpleMin && cumpleMax;
+    if (minPrice || maxPrice) {
+      filteredDoctors = filteredDoctors.filter((doctor) => {
+        const meetsMin = minPrice ? doctor.fee >= Number(minPrice) : true;
+        const meetsMax = maxPrice ? doctor.fee <= Number(maxPrice) : true;
+        return meetsMin && meetsMax;
       });
     }
 
-    if (orden.precioMayor) {
-      doctoresFiltrados.sort((a, b) => b.tarifa - a.tarifa);
+    if (order.priceHigh) {
+      filteredDoctors.sort((a, b) => b.fee - a.fee);
     }
-    if (orden.precioMenor) {
-      doctoresFiltrados.sort((a, b) => a.tarifa - b.tarifa);
+    if (order.priceLow) {
+      filteredDoctors.sort((a, b) => a.fee - b.fee);
     }
-    if (orden.alfabeticoAZ) {
-      doctoresFiltrados.sort((a, b) => a.nombreCompleto.localeCompare(b.nombreCompleto));
+    if (order.alphabeticalAZ) {
+      filteredDoctors.sort((a, b) => a.fullName.localeCompare(b.fullName));
     }
-    if (orden.alfabeticoZA) {
-      doctoresFiltrados.sort((a, b) => b.nombreCompleto.localeCompare(a.nombreCompleto));
+    if (order.alphabeticalZA) {
+      filteredDoctors.sort((a, b) => b.fullName.localeCompare(a.fullName));
     }
-    if (orden.calificacionMayor) {
-      doctoresFiltrados.sort((a, b) => b.calificacion - a.calificacion);
+    if (order.ratingHigh) {
+      filteredDoctors.sort((a, b) => b.rating - a.rating);
     }
-    if (orden.calificacionMenor) {
-      doctoresFiltrados.sort((a, b) => a.calificacion - b.calificacion);
+    if (order.ratingLow) {
+      filteredDoctors.sort((a, b) => a.rating - b.rating);
     }
 
-    return doctoresFiltrados;
+    return filteredDoctors;
   };
 
-  const toggleOrden = (key) => {
-    setOrden((prevOrden) => ({
-      ...prevOrden,
-      [key]: !prevOrden[key]
+  const toggleOrder = (key) => {
+    setOrder((prevOrder) => ({
+      ...prevOrder,
+      [key]: !prevOrder[key]
     }));
   };
 
-  const doctoresFiltrados = filtrarDoctores();
+  const filteredDoctors = filterDoctors();
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-7xl mx-auto flex gap-8">
-        {/* Filtros */}
+        {/* Filters */}
         <div className="w-1/3 bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">Filtros</h2>
           <div className="mb-6">
             <label className="block font-semibold mb-2">Especialidad</label>
             <input
               type="text"
-              value={especialidad}
-              onChange={(e) => setEspecialidad(e.target.value)}
-              placeholder="Ej. Cardiología"
+              value={specialty}
+              onChange={(e) => setSpecialty(e.target.value)}
+              placeholder="E.g. Cardiology"
               className="w-full px-4 py-2 border rounded-lg"
             />
           </div>
           <div className="mb-6">
-            <label className="block font-semibold mb-2">Calificación mínima</label>
+            <label className="block font-semibold mb-2">Mínimo Rating</label>
             <input
               type="number"
-              value={calificacionMinima}
-              onChange={(e) => setCalificacionMinima(e.target.value)}
-              placeholder="Ej. 4"
+              value={minRating}
+              onChange={(e) => setMinRating(e.target.value)}
+              placeholder="E.g. 4"
               className="w-full px-4 py-2 border rounded-lg"
             />
           </div>
@@ -145,115 +157,115 @@ const DoctorsListPage = () => {
             <div className="flex gap-2">
               <input
                 type="number"
-                value={precioMin}
-                onChange={(e) => setPrecioMin(e.target.value)}
-                placeholder="Mín"
+                value={minPrice}
+                onChange={(e) => setMinPrice(e.target.value)}
+                placeholder="Min"
                 className="w-1/2 px-4 py-2 border rounded-lg"
               />
               <input
                 type="number"
-                value={precioMax}
-                onChange={(e) => setPrecioMax(e.target.value)}
-                placeholder="Máx"
+                value={maxPrice}
+                onChange={(e) => setMaxPrice(e.target.value)}
+                placeholder="Max"
                 className="w-1/2 px-4 py-2 border rounded-lg"
               />
             </div>
           </div>
           <div>
-            <h3 className="font-semibold mb-2">Ordenar por</h3>
+            <h3 className="font-semibold mb-2">Ordenado por</h3>
             <div>
               <p className="font-medium">Precio</p>
               <label className="block">
                 <input
                   type="checkbox"
-                  checked={orden.precioMayor}
-                  onChange={() => toggleOrden("precioMayor")}
+                  checked={order.priceHigh}
+                  onChange={() => toggleOrder("priceHigh")}
                 />{" "}
-                Mayor a menor
+                High to Low
               </label>
               <label className="block">
                 <input
                   type="checkbox"
-                  checked={orden.precioMenor}
-                  onChange={() => toggleOrden("precioMenor")}
+                  checked={order.priceLow}
+                  onChange={() => toggleOrder("priceLow")}
                 />{" "}
-                Menor a mayor
-              </label>
-            </div>
-            <div>
-              <p className="font-medium mt-4">Alfabético</p>
-              <label className="block">
-                <input
-                  type="checkbox"
-                  checked={orden.alfabeticoAZ}
-                  onChange={() => toggleOrden("alfabeticoAZ")}
-                />{" "}
-                A a Z
-              </label>
-              <label className="block">
-                <input
-                  type="checkbox"
-                  checked={orden.alfabeticoZA}
-                  onChange={() => toggleOrden("alfabeticoZA")}
-                />{" "}
-                Z a A
+                Low to High
               </label>
             </div>
             <div>
-              <p className="font-medium mt-4">Calificación</p>
+              <p className="font-medium mt-4">Por alfabeto</p>
               <label className="block">
                 <input
                   type="checkbox"
-                  checked={orden.calificacionMayor}
-                  onChange={() => toggleOrden("calificacionMayor")}
+                  checked={order.alphabeticalAZ}
+                  onChange={() => toggleOrder("alphabeticalAZ")}
                 />{" "}
-                Mayor a menor
+                A to Z
               </label>
               <label className="block">
                 <input
                   type="checkbox"
-                  checked={orden.calificacionMenor}
-                  onChange={() => toggleOrden("calificacionMenor")}
+                  checked={order.alphabeticalZA}
+                  onChange={() => toggleOrder("alphabeticalZA")}
                 />{" "}
-                Menor a mayor
+                Z to A
+              </label>
+            </div>
+            <div>
+              <p className="font-medium mt-4">Rating</p>
+              <label className="block">
+                <input
+                  type="checkbox"
+                  checked={order.ratingHigh}
+                  onChange={() => toggleOrder("ratingHigh")}
+                />{" "}
+                High to Low
+              </label>
+              <label className="block">
+                <input
+                  type="checkbox"
+                  checked={order.ratingLow}
+                  onChange={() => toggleOrder("ratingLow")}
+                />{" "}
+                Low to High
               </label>
             </div>
           </div>
         </div>
 
-        {/* Listado de Doctores */}
+        {/* Doctors List */}
         <div className="w-2/3">
-          {doctoresFiltrados.map((doctor) => (
+          {filteredDoctors.map((doctor) => (
             <Link
-              to={`/doctor-info`}
+              to={`./${doctor.id}`}
               key={doctor.id}
               className="bg-white mb-4 p-6 rounded-lg shadow-md flex items-center gap-6 transform transition-transform duration-300 hover:scale-105 hover:shadow-lg"
             >
-              {/* Foto del Doctor */}
+              {/* Doctor's Photo */}
               <img
-                src={doctor.foto}
-                alt={`Foto de ${doctor.nombreCompleto}`}
+                src={doctor.photo}
+                alt={`Photo of ${doctor.fullName}`}
                 className="w-40 h-40 rounded-full object-cover"
               />
 
-              {/* Información del Doctor */}
+              {/* Doctor's Information */}
               <div>
-                <h3 className="text-2xl font-bold">{doctor.nombreCompleto}</h3>
+                <h3 className="text-2xl font-bold">{doctor.fullName}</h3>
                 <p className="text-yellow-500 font-semibold flex items-center gap-1 text-lg">
-                  {"★".repeat(Math.floor(doctor.calificacion))}
-                  {"☆".repeat(5 - Math.floor(doctor.calificacion))}{" "}
+                  {"★".repeat(Math.floor(doctor.rating))}
+                  {"☆".repeat(5 - Math.floor(doctor.rating))}{" "}
                   <span className="text-sm text-gray-500">
-                    {doctor.calificacion} ({doctor.opiniones} opiniones)
+                    {doctor.rating} ({doctor.reviews} reviews)
                   </span>
                 </p>
-                <p className="text-gray-700 text-sm font-medium">Especialidad: {doctor.especialidad}</p>
+                <p className="text-gray-700 text-sm font-medium">Specialty: {doctor.specialty}</p>
                 <p className="text-gray-700 text-sm flex items-center gap-2 mt-2">
                   <span className="material-icons text-gray-500">location_on</span>
-                  {doctor.ubicacion}
+                  {doctor.location}
                 </p>
-                <p className="text-gray-700 text-sm">Experiencia: {doctor.experiencia} años</p>
+                <p className="text-gray-700 text-sm">Experience: {doctor.experience} years</p>
                 <p className="text-gray-700 text-sm font-bold mt-2">
-                  A partir de ${doctor.tarifa} USD
+                  Starting at ${doctor.fee} USD
                 </p>
               </div>
             </Link>
