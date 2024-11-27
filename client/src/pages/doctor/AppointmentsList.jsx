@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAppointments } from "../../context/appointmentsContext";
+import { Link } from "react-router-dom";
 
 const AppointmentList = () => {
   const initialAppointments = [
@@ -36,7 +38,13 @@ const AppointmentList = () => {
     },
   ];
 
-  const [appointments, setAppointments] = useState(initialAppointments);
+  const [, setAppointments] = useState(initialAppointments);
+  const {appointments, getAppointments} = useAppointments();
+  useEffect(() => {
+    getAppointments();
+  }, []);
+  console.log(appointments)
+  console.log("habla")
   const [filters, setFilters] = useState({
     dateFrom: "",
     dateTo: "",
@@ -225,6 +233,11 @@ const AppointmentList = () => {
                 Estado: <span className="font-medium">{appt.status}</span>
               </p>
               {appt.reason && <p>Motivo: {appt.reason}</p>}
+              {/* Appointment Button */}
+        <Link
+        to={`./${appt.id}/`}
+        key={appt.id}
+        >
               <button
                 className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
               >
@@ -232,6 +245,7 @@ const AppointmentList = () => {
                   ? "Ver detalles de la cita"
                   : "Gestionar la cita"}
               </button>
+              </Link>
             </li>
           ))}
         </ul>

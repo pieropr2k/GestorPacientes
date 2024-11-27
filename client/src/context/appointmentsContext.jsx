@@ -35,13 +35,14 @@ export function AppointmentProvider({ children }) {
   const createAppointment = async (appointment) => {
     try {
       const res = await createAppointmentRequest(appointment);
+      //setDoctors((prevDoctors) => [...prevDoctors, res.data]);
       console.log(res.data);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const getAppointment = async (id) => {
+  const getAppointmentById = async (id) => {
     try {
       const res = await getAppointmentRequest(id);
       return res.data;
@@ -66,7 +67,7 @@ export function AppointmentProvider({ children }) {
         getAppointments,
         deleteAppointment,
         createAppointment,
-        getAppointment,
+        getAppointmentById,
         updateAppointment,
       }}
     >

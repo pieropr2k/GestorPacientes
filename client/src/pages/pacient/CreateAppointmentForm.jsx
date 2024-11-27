@@ -1,15 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState} from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/authContext";
+import { createAppointmentRequest } from "../../api/appointments";
+import { useAppointments } from "../../context/appointmentsContext";
 
 function CreateAppointmentForm() {
   const {user} = useAuth();
+  const {createAppointment} = useAppointments();
+
   const [consultationReason, setConsultationReason] = useState("");
   const [description, setDescription] = useState("");
   const [dateTime, setDateTime] = useState("");
   const [errors, setErrors] = useState({});
 
   const params = useParams();
+  const navigate = useNavigate();
 
   // Función de validación
   const validateForm = () => {
@@ -25,12 +30,16 @@ function CreateAppointmentForm() {
     if (validateForm()) {
       const appointment = {
         doctor_id: params.id,
-        patient_id: user.id,
+        //patient_id: user.id,
         consultation_reason: consultationReason,
         description,
         date_time: dateTime,
+        state: "pending",
       };
+      console.log(createAppointment)
+      createAppointment(appointment);
       console.log("Cita registrada:", appointment);
+      navigate("/client/appointments");
       // Aquí iría la lógica para enviar la cita a la base de datos (API)
     }
   };

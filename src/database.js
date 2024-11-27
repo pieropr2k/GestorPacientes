@@ -84,7 +84,7 @@ db.serialize(() => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         speciality_name TEXT NOT NULL,
         institution_name TEXT NOT NULL,
-        type TEXT NOT NULL,                    -- Tipo: instituto, universidad, etc.
+        type_of_cert TEXT NOT NULL,                    -- Tipo: instituto, universidad, etc.
         start_date DATE NOT NULL,
         end_date DATE,
         attachment_url TEXT,                   -- Ruta del archivo (si se suben documentos)
@@ -112,19 +112,42 @@ db.serialize(() => {
         CREATE TABLE IF NOT EXISTS appointments (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         doctor_id INTEGER NOT NULL,
-        patient_id INTEGER NOT NULL,
+        patient_id TEXT NOT NULL,
         consultation_reason TEXT NOT NULL,
         description TEXT,
         state TEXT NOT NULL CHECK(state IN ('pending', 'confirmed', 'in progress', 'completed', 'canceled', 'no show')),
         date_time TEXT NOT NULL,
         FOREIGN KEY (doctor_id) REFERENCES doctors(id),
-        FOREIGN KEY (patient_id) REFERENCES patients(id)
+        FOREIGN KEY (patient_id) REFERENCES patients(document_num)
     )
     `);
 
+    // Historial Medico
+    db.run(`
+        CREATE TABLE IF NOT EXISTS medical_history (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, -- Unique identifier
+    doctor_id INTEGER NOT NULL,           -- Associated doctor ID
+    patient_id TEXT NOT NULL,          -- Associated patient ID
+    appointment_id INTEGER NOT NULL,          -- Associated patient ID
+    registration_date DATETIME DEFAULT CURRENT_TIMESTAMP, -- Registration date
+    diagnosis TEXT NOT NULL,              -- Diagnosis details
+    treatment TEXT NOT NULL,              -- Suggested treatment
+    notes JSON DEFAULT '[]',  -- Campo JSON para las nota
+    FOREIGN KEY (doctor_id) REFERENCES doctors(id),        -- Foreign key to doctors table
+    FOREIGN KEY (patient_id) REFERENCES patients(id)       -- Foreign key to patients table
+    FOREIGN KEY (appointment_id) REFERENCES appointments(id)       -- Foreign key to patients table
+)
+    `);
 
-
-
+    db.run(`
+        CREATE TABLE IF NOT EXISTS medical_notes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, -- Unique identifier
+    description TEXT NOT NULL,            -- Medical note description
+    medical_history_id INTEGER NOT NULL,  -- Reference to associated medical history
+    FOREIGN KEY (medical_history_id) REFERENCES medical_history(id) -- Foreign key to medical_history table
+)
+    `);
+   
 
 
 
@@ -223,11 +246,11 @@ doctors.forEach((doctor) => {
                             }
                             const doctor_id = this.lastID;
 
-                            /*
+                            
                             // Insert certifications
                             doctor.certifications.forEach((cert) => {
                                 db.run(
-                                    `INSERT INTO certifications (speciality_name, institution_name, type, start_date, end_date, doctor_id)
+                                    `INSERT INTO certifications (speciality_name, institution_name, type_of_cert, start_date, end_date, doctor_id)
                                      VALUES (?, ?, ?, ?, ?, ?)`,
                                     [cert.speciality_name, cert.institution_name, cert.type, cert.start_date, cert.end_date, doctor_id]
                                 );
@@ -241,7 +264,6 @@ doctors.forEach((doctor) => {
                                     [doctor_id, exp.company_name, exp.position, exp.description, exp.start_date, exp.finish_date]
                                 );
                             });
-                            */
                         }
                     );
                     

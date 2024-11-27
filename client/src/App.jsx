@@ -14,12 +14,13 @@ import Register from "./pages/RegisterPage";
 import DoctorLayout from "./DoctorLayout";
 import ClientLayout from "./ClientLayout";
 import AppointmentsManagement from "./pages/doctor/AppointmentsManagement";
-import AppointmentGestor from "./pages/doctor/AppointmentGestor";
 import AppointmentsList from "./pages/doctor/AppointmentsList";
 import DoctorProfilePage from "./pages/pacient/DoctorProfilePage";
 import PacientRegisterForm from "./pages/PacientRegisterPage";
 import { DoctorProvider } from "./context/doctorsContext";
 import CreateAppointmentForm from "./pages/pacient/CreateAppointmentForm";
+import { AppointmentProvider } from "./context/appointmentsContext";
+import AppointmentDetailsGestor from "./pages/doctor/AppointmentDetailsGestor";
 
 function App() {
   //<DoctorProvider>
@@ -27,6 +28,7 @@ function App() {
   return (
     <AuthProvider>
       <DoctorProvider>
+      <AppointmentProvider>
         <BrowserRouter>
           <Routes>
             {/* Rutas públicas */}
@@ -50,12 +52,13 @@ function App() {
               <Route path="/doctor" element={<DoctorLayout />}>
                 <Route path="appointments-man" element={<AppointmentsManagement />} />
                 <Route path="appointments" element={<AppointmentsList />} />
-                <Route path="appointments/info" element={<AppointmentGestor />} />
+                <Route path="appointments/:id" element={<AppointmentDetailsGestor />} />
                 {/* Agrega más rutas específicas para doctores */}
               </Route>
             </Route>
           </Routes>
         </BrowserRouter>
+        </AppointmentProvider>
         </DoctorProvider>
     </AuthProvider>
   );

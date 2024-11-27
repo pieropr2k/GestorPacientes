@@ -16,7 +16,8 @@ const router = Router();
 router.get("/appointments", auth, getAllAppointments);
 
 // Crear una cita - Solo los pacientes pueden crear citas
-router.post("/appointments", auth, validateSchema(createAppointmentSchema), createAppointment);
+router.post("/appointments", auth, createAppointment);
+//router.post("/appointments", auth, validateSchema(createAppointmentSchema), createAppointment);
 
 // Obtener una cita por ID - Los doctores y pacientes solo pueden ver sus propias citas
 router.get("/appointments/:id", auth, getAppointmentById);

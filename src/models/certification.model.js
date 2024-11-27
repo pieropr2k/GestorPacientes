@@ -5,12 +5,12 @@ const CertificationModel = {
   createCertification: (certification) => {
     return new Promise((resolve, reject) => {
       const query = `
-        INSERT INTO certifications (speciality_name, institution_name, type, start_date, end_date, attachment_url, doctor_id)
+        INSERT INTO certifications (speciality_name, institution_name, type_of_cert, start_date, end_date, attachment_url, doctor_id)
         VALUES (?, ?, ?, ?, ?, ?, ?)`;
       const params = [
         certification.speciality_name,
         certification.institution_name,
-        certification.type,
+        certification.type_of_cert,
         certification.start_date,
         certification.end_date,
         certification.attachment_url,

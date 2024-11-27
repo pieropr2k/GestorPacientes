@@ -1,55 +1,67 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useAppointments } from "../../context/appointmentsContext";
 
-const AppointmentsList = ({ appointments }) => {
+const AppointmentsList = () => {
+  const {appointments, getAppointments} = useAppointments();
 
-  appointments = [
+  const appointmentsList = [
     {
       id: 1,
       date: "2024-12-01T10:00:00",
       doctor: {
-        nombreCompleto: "Dra. María López",
-        especialidad: "Dermatología",
+        fullName: "Dr. María López",
+        specialty: "Dermatology",
       },
-      estado: "programada",
-      motivo_consulta: "Revisión de lunares",
+      state: "pending",
+      consultationReason: "Mole check",
     },
     {
       id: 2,
       date: "2024-11-10T15:00:00",
       doctor: {
-        nombreCompleto: "Dr. Juan Pérez",
-        especialidad: "Cardiología",
+        fullName: "Dr. Juan Pérez",
+        specialty: "Cardiology",
       },
-      estado: "completada",
-      motivo_consulta: "Control de presión arterial",
+      state: "completed",
+      consultationReason: "Blood pressure control",
     },
     {
       id: 3,
       date: "2024-11-05T10:00:00",
       doctor: {
-        nombreCompleto: "Dra. Ana García",
-        especialidad: "Ginecología",
+        fullName: "Dr. Ana García",
+        specialty: "Gynecology",
       },
-      estado: "cancelada",
-      motivo_consulta: "Consulta prenatal",
+      state: "canceled",
+      consultationReason: "Prenatal consultation",
     },
   ];
-  
 
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showRescheduleModal, setShowRescheduleModal] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
 
-  const now = new Date();
+  
+  useEffect(() => {
+    getAppointments();
+  }, []);
+  console.log(appointments)
+
   const futureAppointments = appointments.filter(
-    (appointment) => new Date(appointment.date) > now
+    (appointment) =>
+      appointment.state === "pending" ||
+      appointment.state === "confirmed" ||
+      appointment.state === "in progress"
   );
   const pastAppointments = appointments.filter(
-    (appointment) => new Date(appointment.date) <= now
+    (appointment) =>
+      appointment.state === "completed" ||
+      appointment.state === "canceled" ||
+      appointment.state === "no show"
   );
 
   const formatDateTime = (date) =>
-    new Date(date).toLocaleDateString("es", {
+    new Date(date).toLocaleDateString("en", {
       weekday: "long",
       year: "numeric",
       month: "long",
@@ -71,11 +83,11 @@ const AppointmentsList = ({ appointments }) => {
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
-        <h1 className="text-3xl font-bold text-center mb-6">Tus Citas</h1>
+        <h1 className="text-3xl font-bold text-center mb-6">Your Appointments</h1>
 
-        {/* Citas Futuras */}
+        {/* Future Appointments */}
         <div className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Citas Futuras</h2>
+          <h2 className="text-2xl font-semibold mb-4">Future Appointments</h2>
           {futureAppointments.length > 0 ? (
             <ul className="space-y-4">
               {futureAppointments.map((appointment) => (
@@ -86,21 +98,21 @@ const AppointmentsList = ({ appointments }) => {
                   <div className="flex justify-between items-start">
                     <div>
                       <p className="text-lg font-bold">
-                        {appointment.doctor.nombreCompleto}
+                        {appointment.doctor.fullName}
                       </p>
-                      <p className="text-gray-600">{appointment.doctor.especialidad}</p>
+                      <p className="text-gray-600">{appointment.doctor.specialty}</p>
                       <p className="text-gray-500">{formatDateTime(appointment.date)}</p>
                       <p className="text-gray-700">
-                        Motivo: {appointment.motivo_consulta}
+                        Reason: {appointment.consultationReason}
                       </p>
                       <p
                         className={`text-sm font-semibold ${
-                          appointment.estado === "programada"
+                          appointment.state === "scheduled"
                             ? "text-blue-600"
                             : "text-red-600"
                         }`}
                       >
-                        Estado: {appointment.estado}
+                        State: {appointment.state}
                       </p>
                     </div>
                     <div className="flex gap-2">
@@ -108,13 +120,13 @@ const AppointmentsList = ({ appointments }) => {
                         onClick={() => handleReschedule(appointment)}
                         className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
                       >
-                        Reprogramar
+                        Reschedule
                       </button>
                       <button
                         onClick={() => handleCancel(appointment)}
                         className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
                       >
-                        Cancelar
+                        Cancel
                       </button>
                     </div>
                   </div>
@@ -122,13 +134,13 @@ const AppointmentsList = ({ appointments }) => {
               ))}
             </ul>
           ) : (
-            <p className="text-gray-500">No tienes citas futuras.</p>
+            <p className="text-gray-500">You have no future appointments.</p>
           )}
         </div>
 
-        {/* Citas Pasadas */}
+        {/* Past Appointments */}
         <div>
-          <h2 className="text-2xl font-semibold mb-4">Citas Pasadas</h2>
+          <h2 className="text-2xl font-semibold mb-4">Past Appointments</h2>
           {pastAppointments.length > 0 ? (
             <ul className="space-y-4">
               {pastAppointments.map((appointment) => (
@@ -139,33 +151,33 @@ const AppointmentsList = ({ appointments }) => {
                   <div className="flex justify-between items-start">
                     <div>
                       <p className="text-lg font-bold">
-                        {appointment.doctor.nombreCompleto}
+                        {appointment.doctor.fullName}
                       </p>
-                      <p className="text-gray-600">{appointment.doctor.especialidad}</p>
+                      <p className="text-gray-600">{appointment.doctor.specialty}</p>
                       <p className="text-gray-500">{formatDateTime(appointment.date)}</p>
                       <p className="text-gray-700">
-                        Motivo: {appointment.motivo_consulta}
+                        Reason: {appointment.consultationReason}
                       </p>
-                      <p className="text-green-600 font-semibold">Estado: {appointment.estado}</p>
+                      <p className="text-green-600 font-semibold">State: {appointment.state}</p>
                     </div>
                   </div>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-gray-500">No tienes citas pasadas.</p>
+            <p className="text-gray-500">You have no past appointments.</p>
           )}
         </div>
       </div>
 
-      {/* Modal Cancelar */}
+      {/* Cancel Modal */}
       {showCancelModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h3 className="text-xl font-semibold mb-4">Cancelar Cita</h3>
+            <h3 className="text-xl font-semibold mb-4">Cancel Appointment</h3>
             <p className="text-gray-700 mb-6">
-              ¿Estás seguro de que quieres cancelar tu cita con{" "}
-              <strong>{selectedAppointment.doctor.nombreCompleto}</strong>?
+              Are you sure you want to cancel your appointment with{" "}
+              <strong>{selectedAppointment.doctor.fullName}</strong>?
             </p>
             <div className="flex justify-end gap-4">
               <button
@@ -176,26 +188,26 @@ const AppointmentsList = ({ appointments }) => {
               </button>
               <button
                 onClick={() => {
-                  // Acción de cancelar cita
+                  // Action to cancel appointment
                   setShowCancelModal(false);
                 }}
                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
               >
-                Sí, Cancelar
+                Yes, Cancel
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Modal Reprogramar */}
+      {/* Reschedule Modal */}
       {showRescheduleModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h3 className="text-xl font-semibold mb-4">Reprogramar Cita</h3>
+            <h3 className="text-xl font-semibold mb-4">Reschedule Appointment</h3>
             <p className="text-gray-700 mb-6">
-              ¿Quieres reprogramar tu cita con{" "}
-              <strong>{selectedAppointment.doctor.nombreCompleto}</strong>?
+              Do you want to reschedule your appointment with{" "}
+              <strong>{selectedAppointment.doctor.fullName}</strong>?
             </p>
             <div className="flex justify-end gap-4">
               <button
@@ -206,12 +218,12 @@ const AppointmentsList = ({ appointments }) => {
               </button>
               <button
                 onClick={() => {
-                  // Acción de reprogramar cita
+                  // Action to reschedule appointment
                   setShowRescheduleModal(false);
                 }}
                 className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
               >
-                Sí, Reprogramar
+                Yes, Reschedule
               </button>
             </div>
           </div>

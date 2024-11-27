@@ -7,6 +7,8 @@ export const createDoctor = async (req, res) => {
     try {
         const doctorFormatted = { ...doctor, user_id: req.user.id };
         const id = await DoctorModel.createDoctor(doctorFormatted);
+        //await CertificationModel.createCertification();
+        //await ExperienceModel.createExperience();
         res.status(201).json({ id });
     } catch (err) {
         return res.status(400).json({ error: err.message });

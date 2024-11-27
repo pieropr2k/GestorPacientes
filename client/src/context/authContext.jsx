@@ -32,10 +32,11 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await registerRequest(user);
       if (res.status === 200) {
-        Cookies.set('token', res.data.token);
+        //Cookies.set('token', res.data.token);
         console.log(res.data.token)
         console.log(Cookies)
-        
+        localStorage.setItem('token', res.data.token);
+
         setUser(res.data);
         setIsAuthenticated(true);
       }
@@ -52,6 +53,9 @@ export const AuthProvider = ({ children }) => {
         //console.log(res.data.token)
         //console.log(res.data)
         //console.log(Cookies)
+      console.log(res.data)
+      localStorage.setItem('token', res.data.token);
+
       setUser(res.data);
       setIsAuthenticated(true);
     } catch (error) {
@@ -62,50 +66,10 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     Cookies.remove("token");
+    localStorage.removeItem("token");
     setUser(null);
     setIsAuthenticated(false);
   };
-
-  /*
-  const signup = async (user) => {
-    try {
-      const res = await registerRequest(user);
-      if (res.status === 200) {
-        Cookies.set('token', res.data.token);
-        console.log(res.data.token)
-        console.log(Cookies)
-        
-        setUser(res.data);
-        setIsAuthenticated(true);
-      }
-    } catch (error) {
-      console.log(error.response.data);
-      setErrors(error.response.data.message);
-    }
-  };
-
-  const signin = async (user) => {
-    try {
-      const res = await loginRequest(user);
-      //Cookies.set('token', res.data.token);
-        //console.log(res.data.token)
-        //console.log(res.data)
-        //console.log(Cookies)
-      setUser(res.data);
-      setIsAuthenticated(true);
-    } catch (error) {
-      console.log(error);
-      // setErrors(error.response.data.message);
-    }
-  };
-
-  const logout = () => {
-    Cookies.remove("token");
-    setUser(null);
-    setIsAuthenticated(false);
-  };
-  */
-
 
   useEffect(() => {
     //console.log('before useefffect');
@@ -119,8 +83,7 @@ export const AuthProvider = ({ children }) => {
       console.log(Cookies, "token front");
       console.log(cookies.token, "token front");
       
-      if (!cookies.token) {
-        
+      if (!token) {  
         setIsAuthenticated(false);
         setLoading(false);
         return;

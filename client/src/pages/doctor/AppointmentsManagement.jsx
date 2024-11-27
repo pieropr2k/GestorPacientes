@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useAppointments } from "../../context/appointmentsContext";
 
 const exampleAppointments = [
   {
@@ -24,6 +25,7 @@ export default function AppointmentsManagement() {
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [newStatus, setNewStatus] = useState("");
   const [showRescheduleModal, setShowRescheduleModal] = useState(false);
+  
 
   const updateAppointmentStatus = (id, status) => {
     setAppointments((prev) =>

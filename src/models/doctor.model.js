@@ -5,13 +5,12 @@ const DoctorModel = {
   createDoctor: (doctor) => {
     return new Promise((resolve, reject) => {
       const query = `
-        INSERT INTO doctors (id, specialty, district, location, qualification, hourly_rate)
-        VALUES (?, ?, ?, ?, ?, ?)`;
+        INSERT INTO doctors (document_num, specialty, district, qualification, hourly_rate)
+        VALUES (?, ?, ?, ?, ?)`;
       const params = [
-        doctor.id,
+        doctor.document_num,
         doctor.specialty,
         doctor.district,
-        doctor.location,
         doctor.qualification,
         doctor.hourly_rate,
       ];
@@ -46,11 +45,28 @@ const DoctorModel = {
   getDoctorById: (id) => {
     return new Promise((resolve, reject) => {
       const query = `
-        SELECT doctors.*, users.*
+        SELECT users.*, doctors.*
         FROM doctors 
         JOIN users ON doctors.document_num = users.id
         WHERE doctors.id = ?`;
       db.get(query, [id], (err, row) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(row);
+      });
+    });
+  },
+
+  // Obtener un doctor por ID
+  getDoctorByDocumentId: (document_num_id) => {
+    return new Promise((resolve, reject) => {
+      const query = `
+        SELECT users.*, doctors.*
+        FROM doctors 
+        JOIN users ON doctors.document_num = users.id
+        WHERE doctors.document_num = ?`;
+      db.get(query, [document_num_id], (err, row) => {
         if (err) {
           return reject(err);
         }
