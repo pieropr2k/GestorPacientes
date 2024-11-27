@@ -127,145 +127,165 @@ const DoctorsListPage = () => {
   const filteredDoctors = filterDoctors();
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-7xl mx-auto flex gap-8">
         {/* Filters */}
-        <div className="w-1/3 bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Filtros</h2>
+        <div className="w-1/4 bg-white p-6 rounded-lg shadow-lg">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-6">Filtros</h2>
+          
+          {/* Specialty Filter */}
           <div className="mb-6">
-            <label className="block font-semibold mb-2">Especialidad</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Especialidad</label>
             <input
               type="text"
               value={specialty}
               onChange={(e) => setSpecialty(e.target.value)}
-              placeholder="E.g. Cardiology"
-              className="w-full px-4 py-2 border rounded-lg"
+              placeholder="Ej. Cardiología"
+              className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
+  
+          {/* Min Rating Filter */}
           <div className="mb-6">
-            <label className="block font-semibold mb-2">Mínimo Rating</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Mínimo Rating</label>
             <input
               type="number"
               value={minRating}
               onChange={(e) => setMinRating(e.target.value)}
-              placeholder="E.g. 4"
-              className="w-full px-4 py-2 border rounded-lg"
+              placeholder="Ej. 4"
+              className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
+  
+          {/* Price Range Filter */}
           <div className="mb-6">
-            <label className="block font-semibold mb-2">Rango de Precio</label>
-            <div className="flex gap-2">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Rango de Precio</label>
+            <div className="flex gap-4">
               <input
                 type="number"
                 value={minPrice}
                 onChange={(e) => setMinPrice(e.target.value)}
-                placeholder="Min"
-                className="w-1/2 px-4 py-2 border rounded-lg"
+                placeholder="Mín"
+                className="w-1/2 p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <input
                 type="number"
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
-                placeholder="Max"
-                className="w-1/2 px-4 py-2 border rounded-lg"
+                placeholder="Máx"
+                className="w-1/2 p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
-          <div>
-            <h3 className="font-semibold mb-2">Ordenado por</h3>
-            <div>
-              <p className="font-medium">Precio</p>
-              <label className="block">
+  
+          {/* Sorting Options */}
+          <div className="mt-6">
+            <h3 className="font-semibold text-gray-700 mb-4">Ordenado por:</h3>
+  
+            {/* Price Sorting */}
+            <div className="mb-4">
+              <p className="font-medium text-gray-700">Precio</p>
+              <label className="block text-sm text-gray-600">
                 <input
                   type="checkbox"
                   checked={order.priceHigh}
                   onChange={() => toggleOrder("priceHigh")}
-                />{" "}
-                High to Low
+                  className="mr-2"
+                />
+                De alto a bajo
               </label>
-              <label className="block">
+              <label className="block text-sm text-gray-600">
                 <input
                   type="checkbox"
                   checked={order.priceLow}
                   onChange={() => toggleOrder("priceLow")}
-                />{" "}
-                Low to High
+                  className="mr-2"
+                />
+                De bajo a alto
               </label>
             </div>
-            <div>
-              <p className="font-medium mt-4">Por alfabeto</p>
-              <label className="block">
+  
+            {/* Alphabetical Sorting */}
+            <div className="mb-4">
+              <p className="font-medium text-gray-700">Por alfabeto</p>
+              <label className="block text-sm text-gray-600">
                 <input
                   type="checkbox"
                   checked={order.alphabeticalAZ}
                   onChange={() => toggleOrder("alphabeticalAZ")}
-                />{" "}
-                A to Z
+                  className="mr-2"
+                />
+                A a Z
               </label>
-              <label className="block">
+              <label className="block text-sm text-gray-600">
                 <input
                   type="checkbox"
                   checked={order.alphabeticalZA}
                   onChange={() => toggleOrder("alphabeticalZA")}
-                />{" "}
-                Z to A
+                  className="mr-2"
+                />
+                Z a A
               </label>
             </div>
+  
+            {/* Rating Sorting */}
             <div>
-              <p className="font-medium mt-4">Rating</p>
-              <label className="block">
+              <p className="font-medium text-gray-700">Rating</p>
+              <label className="block text-sm text-gray-600">
                 <input
                   type="checkbox"
                   checked={order.ratingHigh}
                   onChange={() => toggleOrder("ratingHigh")}
-                />{" "}
-                High to Low
+                  className="mr-2"
+                />
+                De alto a bajo
               </label>
-              <label className="block">
+              <label className="block text-sm text-gray-600">
                 <input
                   type="checkbox"
                   checked={order.ratingLow}
                   onChange={() => toggleOrder("ratingLow")}
-                />{" "}
-                Low to High
+                  className="mr-2"
+                />
+                De bajo a alto
               </label>
             </div>
           </div>
         </div>
-
+  
         {/* Doctors List */}
-        <div className="w-2/3">
+        <div className="w-3/4">
           {filteredDoctors.map((doctor) => (
             <Link
               to={`./${doctor.id}`}
               key={doctor.id}
-              className="bg-white mb-4 p-6 rounded-lg shadow-md flex items-center gap-6 transform transition-transform duration-300 hover:scale-105 hover:shadow-lg"
+              className="bg-white p-6 rounded-lg shadow-md flex items-center gap-6 mb-6 transform transition-transform duration-300 hover:scale-105 hover:shadow-lg"
             >
               {/* Doctor's Photo */}
               <img
-                src={doctor.photo}
+                src={doctor.photo || 'https://images.nightcafe.studio//assets/profile.png?tr=w-1600,c-at_max'}
                 alt={`Photo of ${doctor.fullName}`}
-                className="w-40 h-40 rounded-full object-cover"
+                className="w-40 h-40 rounded-full object-cover shadow-md mr-2"
               />
-
+  
               {/* Doctor's Information */}
-              <div>
-                <h3 className="text-2xl font-bold">{doctor.fullName}</h3>
+              <div className="flex flex-col justify-between">
+                <h3 className="text-2xl font-bold text-gray-800">{doctor.fullName}</h3>
                 <p className="text-yellow-500 font-semibold flex items-center gap-1 text-lg">
                   {"★".repeat(Math.floor(doctor.rating))}
-                  {"☆".repeat(5 - Math.floor(doctor.rating))}{" "}
+                  {"☆".repeat(5 - Math.floor(doctor.rating))}
                   <span className="text-sm text-gray-500">
-                    {doctor.rating} ({doctor.reviews} reviews)
+                    {doctor.rating} ({doctor.reviews ? 50 : 90} reseñas)
                   </span>
                 </p>
-                <p className="text-gray-700 text-sm font-medium">Specialty: {doctor.specialty}</p>
+                <p className="text-gray-700 text-sm">Especialidad: {doctor.specialty}</p>
                 <p className="text-gray-700 text-sm flex items-center gap-2 mt-2">
-                  <span className="material-icons text-gray-500">location_on</span>
+                  <span className="material-icons text-gray-500">Distrito:</span>
                   {doctor.location}
                 </p>
-                <p className="text-gray-700 text-sm">Experience: {doctor.experience} years</p>
-                <p className="text-gray-700 text-sm font-bold mt-2">
-                  Starting at ${doctor.fee} USD
+                <p className="text-gray-700 text-sm">Experiencia: {doctor.experience} años</p>
+                <p className="text-gray-700 text-sm font-semibold mt-2">
+                  Desde ${doctor.fee} USD por hora
                 </p>
               </div>
             </Link>
@@ -274,6 +294,7 @@ const DoctorsListPage = () => {
       </div>
     </div>
   );
+  
 };
 
 export default DoctorsListPage;

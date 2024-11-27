@@ -12,13 +12,17 @@ export function Navbar() {
     <nav className="bg-blue-600 text-white flex justify-between items-center py-4 px-8 shadow-md">
       {/* Logo / Title */}
       <h1 className="text-2xl font-bold">
-        <Link to={isAuthenticated ? "./appointments" : "./"}>Titulo</Link>
+        <Link to={isAuthenticated ? "./appointments" : "./"}>Health&Secure</Link>
       </h1>
 
       {/* Navigation Sections */}
       {isAuthenticated && (
         <ul className="flex items-center gap-6">
-           
+          <li>
+            <Link to="./health-ai" className="hover:underline">
+              Salud con IA
+            </Link>
+          </li> 
           <li>
             <Link to="./search-doctor" className="hover:underline">
               Buscar Doctor

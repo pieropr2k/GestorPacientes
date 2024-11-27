@@ -112,33 +112,33 @@ const AppointmentList = () => {
   };
 
   return (
-    <div className="flex">
+    <div className="ml-5 flex">
       {/* Panel de Filtros y Ordenamiento */}
-      <div className="w-1/4 bg-gray-100 p-4 rounded-md shadow-md">
-        <h2 className="text-xl font-semibold mb-4">Filtros</h2>
-        {/* ...otros filtros aquí... */}
+      <div className="w-1/3 bg-gray-50 p-4 rounded-md shadow-sm">
+        <h2 className="text-lg font-semibold mb-4 text-gray-800">Filtros</h2>
+        {/* Filtros */}
         <div className="mb-4">
-          <label className="block font-medium">Desde:</label>
+          <label className="block text-sm text-gray-600">Desde:</label>
           <input
             type="date"
-            className="w-full border rounded-md p-2"
+            className="w-full border rounded-md p-2 text-sm"
             value={filters.dateFrom}
             onChange={(e) => setFilters({ ...filters, dateFrom: e.target.value })}
           />
         </div>
         <div className="mb-4">
-          <label className="block font-medium">Hasta:</label>
+          <label className="block text-sm text-gray-600">Hasta:</label>
           <input
             type="date"
-            className="w-full border rounded-md p-2"
+            className="w-full border rounded-md p-2 text-sm"
             value={filters.dateTo}
             onChange={(e) => setFilters({ ...filters, dateTo: e.target.value })}
           />
         </div>
         <div className="mb-4">
-          <label className="block font-medium">Estado:</label>
+          <label className="block text-sm text-gray-600">Estado:</label>
           <select
-            className="w-full border rounded-md p-2"
+            className="w-full border rounded-md p-2 text-sm"
             value={filters.status}
             onChange={(e) => setFilters({ ...filters, status: e.target.value })}
           >
@@ -151,10 +151,10 @@ const AppointmentList = () => {
           </select>
         </div>
         <div className="mb-4">
-          <label className="block font-medium">Paciente:</label>
+          <label className="block text-sm text-gray-600">Paciente:</label>
           <input
             type="text"
-            className="w-full border rounded-md p-2"
+            className="w-full border rounded-md p-2 text-sm"
             placeholder="Buscar por nombre"
             value={filters.patient}
             onChange={(e) => setFilters({ ...filters, patient: e.target.value })}
@@ -162,21 +162,21 @@ const AppointmentList = () => {
         </div>
         <button
           onClick={applyFilters}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md w-full"
-        >Aplicar Filtros
+          className="bg-blue-600 text-white px-4 py-2 rounded-md w-full text-sm hover:bg-blue-700"
+        >
+          Aplicar Filtros
         </button>
-        <h2 className="text-xl font-semibold mt-6 mb-4">[ Ordenar Citas ]</h2>
+        <h2 className="text-lg font-semibold mt-6 mb-4 text-gray-800">Ordenar Citas</h2>
         <div className="mb-4 border-b pb-4">
-          <p className="font-medium">Ordenar por:</p>
-          <div className="mt-2">
-            <p className="font-medium">* Fecha y Hora</p>
+          <div className="mt-2 text-sm text-gray-600">
+            <p className="font-semibold mb-2">Fecha y Hora</p>
             <div className="ml-4">
               <label className="block">
                 <input
                   type="checkbox"
                   checked={sortOption.date === "date-desc"}
                   onChange={() => handleSortChange("date", "date-desc")}
-                  className="mr-2"
+                  className="mr-2 mb-2"
                 />
                 Más recientes primero
               </label>
@@ -191,16 +191,15 @@ const AppointmentList = () => {
               </label>
             </div>
           </div>
-
-          <div className="mt-4">
-            <p className="font-medium">* Nombre del Paciente</p>
+          <div className="mt-4 text-sm text-gray-600">
+            <p className="font-semibold mb-2">Nombre del Paciente</p>
             <div className="ml-4">
               <label className="block">
                 <input
                   type="checkbox"
                   checked={sortOption.name === "name-asc"}
                   onChange={() => handleSortChange("name", "name-asc")}
-                  className="mr-2"
+                  className="mr-2 mb-2"
                 />
                 Ascendente (A-Z)
               </label>
@@ -217,34 +216,30 @@ const AppointmentList = () => {
           </div>
         </div>
       </div>
-
+  
       {/* Lista de Citas */}
-      <div className="w-3/4 p-6">
-        <h1 className="text-2xl font-bold mb-6">Lista de Citas</h1>
+      <div className="w-3/4 ml-6 p-4">
+        <h1 className="text-xl font-semibold mb-6 text-gray-800">Lista de Citas</h1>
         <ul>
           {appointments.map((appt) => (
             <li
               key={appt.id}
-              className="bg-white p-4 mb-4 rounded-md shadow-md border"
+              className="bg-white p-4 mb-4 rounded-md shadow-sm border border-gray-200"
             >
-              <p className="text-lg font-semibold">{appt.patient}</p>
-              <p>📅 {appt.date}, {appt.time}</p>
-              <p>
-                Estado: <span className="font-medium">{appt.status}</span>
+              <p className="text-lg font-semibold text-gray-800">{appt.patient}</p>
+              <p className="text-sm text-gray-600">📅 {appt.date}, {appt.time}</p>
+              <p className="text-sm text-gray-600">
+                Estado: <span className="font-medium text-gray-700">{appt.status}</span>
               </p>
-              {appt.reason && <p>Motivo: {appt.reason}</p>}
-              {/* Appointment Button */}
-        <Link
-        to={`./${appt.id}/`}
-        key={appt.id}
-        >
-              <button
-                className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-              >
-                {appt.status === "Completada" || appt.status === "Cancelada"
-                  ? "Ver detalles de la cita"
-                  : "Gestionar la cita"}
-              </button>
+              {appt.reason && <p className="text-sm text-gray-600">Motivo: {appt.reason}</p>}
+              <Link to={`./${appt.id}/`}>
+                <button
+                  className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700"
+                >
+                  {appt.status === "Completada" || appt.status === "Cancelada"
+                    ? "Ver detalles de la cita"
+                    : "Gestionar la cita"}
+                </button>
               </Link>
             </li>
           ))}
@@ -252,6 +247,7 @@ const AppointmentList = () => {
       </div>
     </div>
   );
+  
 };
 
 export default AppointmentList;

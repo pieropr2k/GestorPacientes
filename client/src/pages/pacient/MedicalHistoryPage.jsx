@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-//import { saveAs } from "file-saver";
+import { saveAs } from "file-saver";
+import { jsPDF } from "jspdf";
 
 const medicalHistoryData = [
   {
@@ -64,19 +65,27 @@ const MedicalHistoryPage = () => {
   };
 
   const handleDownloadHistory = () => {
-    /*
-    const historyText = filteredData.map((appointment) => {
-      return `Cita: ${formatDate(appointment.date)}
-Doctor: ${appointment.doctor.nombreCompleto} - ${appointment.doctor.especialidad}
-Diagnóstico: ${appointment.diagnostico}
-Estado: ${appointment.estado}
-\n`;
+    // Crear una nueva instancia de jsPDF
+    const doc = new jsPDF();
+  
+    // Establecer el contenido del PDF
+    const historyText = filteredData.map((appointment, index) => {
+      return `
+  Cita: ${formatDate(appointment.date)}
+  Doctor: ${appointment.doctor.nombreCompleto} - ${appointment.doctor.especialidad}
+  Diagnóstico: ${appointment.diagnostico}
+  Estado: ${appointment.estado}
+  ----------------------------------
+      `;
     }).join("\n");
-
-    const blob = new Blob([historyText], { type: "text/plain;charset=utf-8" });
-    saveAs(blob, "historial_medico.txt");
-    */
+  
+    // Agregar el texto al PDF
+    doc.text(historyText, 10, 10);
+  
+    // Descargar el archivo PDF
+    doc.save("historial_medico.pdf");
   };
+  
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">

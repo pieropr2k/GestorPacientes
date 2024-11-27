@@ -9,6 +9,7 @@ function AppointmentDetailsGestor() {
   console.log(params.id)
   // Separando los campos de appointment
   const [date, setDate] = useState("20 de noviembre, 10:00 AM");
+  const [patientId, setPatientId] = useState("78485959");
   const [patientName, setPatientName] = useState("Juan Pérez");
   const [patientAge, setPatientAge] = useState(34);
   const [patientGender, setPatientGender] = useState("Masculino");
@@ -28,8 +29,10 @@ function AppointmentDetailsGestor() {
     const loadAppointment = async () => {
       if (params.id) {
         const appointmentData = await getAppointmentById(params.id);
+        console.log(appointmentData);
 
         setDate(appointmentData.date);
+        setPatientId(appointmentData.patientId)
         setPatientName(appointmentData.patientName);
         setPatientAge(appointmentData.patientAge);
         setPatientGender(appointmentData.patientGender);
@@ -42,7 +45,7 @@ function AppointmentDetailsGestor() {
           setTreatment(report.treatment);
           setNotes(report.notes ? report.notes : []);
         }
-        
+
       }
     };
     loadAppointment();
@@ -84,41 +87,53 @@ function AppointmentDetailsGestor() {
     if (status === "in progress" || status === "completed") {
       return (
         <div className="mt-6">
-          <label className="block font-semibold mb-2">Diagnóstico:</label>
-          <input
-            value={diagnosis}
-            onChange={(e) => setDiagnosis(e.target.value)}
-            className="w-full p-2 border rounded-md"
-          />
-
-          <label className="block font-semibold mb-2 mt-4">Tratamiento:</label>
-          <input
-            value={treatment}
-            onChange={(e) => setTreatment(e.target.value)}
-            className="w-full p-2 border rounded-md"
-          />
-
-          <label className="block font-semibold mb-2 mt-4">Notas Médicas:</label>
-          <ul className="list-disc pl-5 mb-2 text-gray-700">
-            {notes.map((note, index) => (
-              <li key={index}>{note}</li>
-            ))}
-          </ul>
-          <div className="flex items-center gap-2">
+          {/* Diagnóstico */}
+          <div className="mb-6">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Diagnóstico:</label>
             <input
-              value={newNote}
-              onChange={(e) => setNewNote(e.target.value)}
-              className="w-full p-2 border rounded-md"
+              value={diagnosis}
+              onChange={(e) => setDiagnosis(e.target.value)}
+              className="w-full p-3 border rounded-md text-sm text-gray-800"
             />
-            <button
-              onClick={handleAddNote}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-            >
-              +
-            </button>
+          </div>
+
+          {/* Tratamiento */}
+          <div className="mb-6">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Tratamiento:</label>
+            <input
+              value={treatment}
+              onChange={(e) => setTreatment(e.target.value)}
+              className="w-full p-3 border rounded-md text-sm text-gray-800"
+            />
+          </div>
+
+          {/* Notas Médicas */}
+          <div className="mb-6">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Notas Médicas:</label>
+            <ul className="list-disc pl-5 text-sm text-gray-700">
+              {notes.map((note, index) => (
+                <li key={index} className="mb-2">{note}</li>
+              ))}
+            </ul>
+
+            {/* Nueva nota */}
+            <div className="flex items-center gap-3">
+              <input
+                value={newNote}
+                onChange={(e) => setNewNote(e.target.value)}
+                className="w-full p-3 border rounded-md text-sm text-gray-800"
+              />
+              <button
+                onClick={handleAddNote}
+                className="px-5 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
+              >
+                +
+              </button>
+            </div>
           </div>
         </div>
       );
+
     }
 
     return (
@@ -136,6 +151,7 @@ function AppointmentDetailsGestor() {
     };
     const onDateJson = {
       client_id: params.id,
+      patient_id: patientId,
       date,
       state: status,
       report: {
@@ -166,23 +182,39 @@ function AppointmentDetailsGestor() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md mt-2">
-      <h1 className="text-2xl font-bold mb-4">Detalles de la Cita</h1>
-      <p className="text-lg mb-2">📅 Cita: {date}</p>
-      <p className="text-lg mb-2">Paciente: {patientName}</p>
-      <p className="text-lg mb-2">
-        Edad: {patientAge} años | Género: {patientGender} | Contacto: {patientContact}
-      </p>
-      <p className="text-lg mb-2">Motivo: {reason}</p>
-      <p className="text-lg mb-4">Precio: {price}</p>
-      <Link to="/medical-history" className="text-blue-600 hover:underline font-semibold">
-        [Ver historial completo]
+    <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md mt-4">
+      {/* Botón Reprogramar Cita */}
+      <h1 className="text-xl font-semibold mb-4 text-gray-800">Detalles de la Cita</h1>
+      <p className="text-sm text-gray-600 mb-2"><strong className="mr-1">Nota:</strong>Si es que quieres puedes:</p>
+      <Link to={`./with-ai`}>
+        <button
+          className={`px-4 mb-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm`}
+        >
+          Analizar la cita con nuestra IA
+        </button>
       </Link>
 
-      <div className="mt-6">
-        <label className="block font-semibold mb-2">Opciones:</label>
+      {/* Información de la Cita */}
+      <div className="mb-4">
+        <p className="text-sm text-gray-600 mb-2">📅 <strong>Cita:</strong> {date}</p>
+        <p className="text-sm text-gray-600 mb-2"><strong>Paciente:</strong> {patientName}</p>
+        <p className="text-sm text-gray-600 mb-2">
+          <strong>Edad:</strong> {patientAge} años | <strong>Género:</strong> {patientGender} | <strong>Contacto:</strong> {patientContact}
+        </p>
+        <p className="text-sm text-gray-600 mb-2"><strong>Motivo:</strong> {reason}</p>
+        <p className="text-sm text-gray-600 mb-4"><strong>Precio:</strong> {price}</p>
+
+        {/* Enlace al historial médico */}
+        <Link to="/medical-history" className="text-blue-600 hover:underline text-sm font-semibold">
+          [Ver historial completo]
+        </Link>
+      </div>
+
+      {/* Opciones de estado */}
+      <div className="mt-6 mb-4">
+        <label className="block text-sm font-semibold text-gray-700 mb-2">Opciones:</label>
         <select
-          className="p-2 border rounded-md w-full mb-4"
+          className="p-2 border rounded-md w-full mb-4 text-sm"
           value={status}
           onChange={(e) => handleStatusChange(e.target.value)}
         >
@@ -195,29 +227,34 @@ function AppointmentDetailsGestor() {
           <option value="no show">No Asistió</option>
         </select>
 
+        {/* Botón Reprogramar Cita */}
         <button
           onClick={() => alert("Redirigir a reprogramar")}
-          className={`px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 ${status === "Cancelada" ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+          className={`px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm ${status === "Cancelada" ? "opacity-50 cursor-not-allowed" : ""}`}
           disabled={status === "Cancelada"}
         >
           Reprogramar Cita
         </button>
       </div>
 
-      <label className="block font-semibold mt-5">Formulario:</label>
-      {renderForm()}
+      {/* Formulario */}
+      <div className="mt-5">
+        <label className="block text-xl font-semibold text-gray-700 mb-2">Formulario de Nuevo Registro Medico:</label>
+        {renderForm()}
+      </div>
 
-      {status !== "No Asistio" && (
+      {/* Registrar en historial */}
+      {status !== "No Asistió" && (
         <button
           onClick={registerAppointmentInfo}
-          className="mt-6 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          className="mt-6 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
         >
           Registrar en el historial
         </button>
       )}
     </div>
   );
+
 }
 
 export default AppointmentDetailsGestor;

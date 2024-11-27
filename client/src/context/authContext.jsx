@@ -14,6 +14,7 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  //const [role, setRole] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -38,6 +39,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('token', res.data.token);
 
         setUser(res.data);
+    //    setRole(res.data.role);
         setIsAuthenticated(true);
       }
     } catch (error) {
@@ -57,6 +59,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', res.data.token);
 
       setUser(res.data);
+      //setRole(res.data.role);
       setIsAuthenticated(true);
     } catch (error) {
       console.log(error);
@@ -68,6 +71,7 @@ export const AuthProvider = ({ children }) => {
     Cookies.remove("token");
     localStorage.removeItem("token");
     setUser(null);
+    //setRole(null);
     setIsAuthenticated(false);
   };
 
@@ -96,6 +100,7 @@ export const AuthProvider = ({ children }) => {
         if (!res.data) return setIsAuthenticated(false);
         setIsAuthenticated(true);
         setUser(res.data);
+        //setRole(res.data.role);
         setLoading(false);
       } catch (error) {
         setIsAuthenticated(false);

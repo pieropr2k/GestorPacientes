@@ -83,11 +83,11 @@ const AppointmentsList = () => {
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
-        <h1 className="text-3xl font-bold text-center mb-6">Your Appointments</h1>
+        <h1 className="text-3xl font-bold text-center mb-6">Tus Citas</h1>
 
         {/* Future Appointments */}
         <div className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Future Appointments</h2>
+          <h2 className="text-2xl font-semibold mb-4">Futuras Citas</h2>
           {futureAppointments.length > 0 ? (
             <ul className="space-y-4">
               {futureAppointments.map((appointment) => (
@@ -112,7 +112,7 @@ const AppointmentsList = () => {
                             : "text-red-600"
                         }`}
                       >
-                        State: {appointment.state}
+                        Estado: {appointment.state}
                       </p>
                     </div>
                     <div className="flex gap-2">
@@ -120,13 +120,13 @@ const AppointmentsList = () => {
                         onClick={() => handleReschedule(appointment)}
                         className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
                       >
-                        Reschedule
+                        Reagendar
                       </button>
                       <button
                         onClick={() => handleCancel(appointment)}
                         className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
                       >
-                        Cancel
+                        Cancelar
                       </button>
                     </div>
                   </div>
@@ -134,13 +134,13 @@ const AppointmentsList = () => {
               ))}
             </ul>
           ) : (
-            <p className="text-gray-500">You have no future appointments.</p>
+            <p className="text-gray-500">No tienes citas futuras.</p>
           )}
         </div>
 
         {/* Past Appointments */}
         <div>
-          <h2 className="text-2xl font-semibold mb-4">Past Appointments</h2>
+          <h2 className="text-2xl font-semibold mb-4">Citas Pasadas</h2>
           {pastAppointments.length > 0 ? (
             <ul className="space-y-4">
               {pastAppointments.map((appointment) => (
@@ -153,19 +153,19 @@ const AppointmentsList = () => {
                       <p className="text-lg font-bold">
                         {appointment.doctor.fullName}
                       </p>
-                      <p className="text-gray-600">{appointment.doctor.specialty}</p>
+                      <p className="text-gray-600">{`Especialidad: ${appointment.doctor.specialty}`}</p>
                       <p className="text-gray-500">{formatDateTime(appointment.date)}</p>
                       <p className="text-gray-700">
-                        Reason: {appointment.consultationReason}
+                        Razón: {appointment.consultationReason}
                       </p>
-                      <p className="text-green-600 font-semibold">State: {appointment.state}</p>
+                      <p className="text-green-600 font-semibold">Estado: {appointment.state}</p>
                     </div>
                   </div>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-gray-500">You have no past appointments.</p>
+            <p className="text-gray-500">No haz tenido ninguna cita hasta ahora.</p>
           )}
         </div>
       </div>

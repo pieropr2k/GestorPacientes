@@ -21,45 +21,52 @@ import { DoctorProvider } from "./context/doctorsContext";
 import CreateAppointmentForm from "./pages/pacient/CreateAppointmentForm";
 import { AppointmentProvider } from "./context/appointmentsContext";
 import AppointmentDetailsGestor from "./pages/doctor/AppointmentDetailsGestor";
+import HealthWithAI from "./pages/pacient/HealthWithAI";
+import AppointmentWithAI from "./pages/doctor/AppointmentWithAI";
+import MedicalRecords from "./pages/doctor/MedicalRecords";
 
 function App() {
   //<DoctorProvider>
-  
+
   return (
     <AuthProvider>
       <DoctorProvider>
-      <AppointmentProvider>
-        <BrowserRouter>
-          <Routes>
-            {/* Rutas públicas */}
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/register-patient" element={<PacientRegisterForm />} />
+        <AppointmentProvider>
+          <BrowserRouter>
+            <Routes>
+              {/* Rutas públicas */}
+              <Route path="/" element={<HomePage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/register-patient" element={<PacientRegisterForm />} />
 
-            {/* Rutas protegidas por rol */}
-            <Route element={<ProtectedRoute />}>
-              {/* Rutas para Clientes */}
-              <Route path="/client" element={<ClientLayout />}>
-                <Route path="appointments" element={<AppointmentsPage />} />
-                <Route path="medical-history" element={<MedicalHistoryPage />} />
-                <Route path="search-doctor" element={<DoctorsListPage />} />
-                <Route path="search-doctor/:id" element={<DoctorProfilePage />} />
-                <Route path="search-doctor/:id/create-appointment" element={<CreateAppointmentForm />} />
+              {/* Rutas para todos excepto doctores */}
+              <Route element={<ProtectedRoute excludedRole={"doctor"} />}>
+                <Route path="/" element={<ClientLayout />}>
+                  <Route path="appointments" element={<AppointmentsPage />} />
+                  <Route path="health-ai" element={<HealthWithAI />} />
+                  <Route path="medical-history" element={<MedicalHistoryPage />} />
+                  <Route path="search-doctor" element={<DoctorsListPage />} />
+                  <Route path="search-doctor/:id" element={<DoctorProfilePage />} />
+                  <Route path="search-doctor/:id/create-appointment" element={<CreateAppointmentForm />} />
+                </Route>
               </Route>
 
-              {/* Rutas para Doctores */}
-              <Route path="/doctor" element={<DoctorLayout />}>
-                <Route path="appointments-man" element={<AppointmentsManagement />} />
-                <Route path="appointments" element={<AppointmentsList />} />
-                <Route path="appointments/:id" element={<AppointmentDetailsGestor />} />
-                {/* Agrega más rutas específicas para doctores */}
+              {/* Rutas protegidas para doctores */}
+              <Route element={<ProtectedRoute allowedRole={"doctor"} />}>
+                <Route path="/doctor" element={<DoctorLayout />}>
+                  <Route path="appointments-man" element={<AppointmentsManagement />} />
+                  <Route path="medical-records" element={<MedicalRecords />} />
+                  <Route path="appointments" element={<AppointmentsList />} />
+                  <Route path="appointments/:id" element={<AppointmentDetailsGestor />} />
+                  <Route path="appointments/:id/with-ai" element={<AppointmentWithAI />} />
+                </Route>
               </Route>
-            </Route>
-          </Routes>
-        </BrowserRouter>
+            </Routes>
+
+          </BrowserRouter>
         </AppointmentProvider>
-        </DoctorProvider>
+      </DoctorProvider>
     </AuthProvider>
   );
   //</DoctorProvider>

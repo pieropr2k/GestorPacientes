@@ -14,14 +14,14 @@ export default function LoginPage() {
   } = useForm({
     resolver: zodResolver(loginSchema),
   });
-  const { signin, errors: loginErrors, isAuthenticated } = useAuth();
+  const { signin, errors: loginErrors, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
   const onSubmit = (data) => signin(data);
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/appointments");
+      navigate(user.role === "client" ? "/appointments" : "/doctor/appointments");
     }
   }, [isAuthenticated]);
 
