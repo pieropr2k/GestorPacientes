@@ -1,6 +1,4 @@
-import CertificationModel from '../models/certification.model.js';
-import DoctorModel from '../models/doctor.model.js';
-import ExperienceModel from '../models/experience.model.js';
+import DoctorModel from '../models/doctor.model.js'; 
 
 export const createDoctor = async (req, res) => {
     const doctor = req.body;

@@ -24,6 +24,42 @@ const MedicalHistoryModel = {
     });
   },
 
+  // Obtener todos los historiales médicos por doctor
+  getAllMedicalHistoriesByDoctor: (doctorId) => {
+    return new Promise((resolve, reject) => {
+      const query = `
+        SELECT u.*, c.*, mh.* 
+        FROM medical_history mh
+        JOIN users u ON mh.patient_id = u.id
+        JOIN clients c ON mh.patient_id = c.document_num
+        WHERE mh.doctor_id = ?`;
+      db.all(query, [doctorId], (err, rows) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(rows); // Devuelve todas las historias médicas
+      });
+    });
+  },
+
+  // Obtener todos los historiales médicos por paciente
+  getAllMedicalHistoriesByPatient: (patientId) => {
+    return new Promise((resolve, reject) => {
+      const query = `
+        SELECT mh.*, u.*, d.* 
+        FROM medical_history mh
+        JOIN users u ON d.document_num = u.id
+        JOIN doctors d ON mh.doctor_id = d.id
+        WHERE mh.patient_id = ?`;
+      db.all(query, [patientId], (err, rows) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(rows); // Devuelve todas las historias médicas
+      });
+    });
+  },
+  /*
   // Obtener todos los historiales médicos
   getAllMedicalHistories: () => {
     return new Promise((resolve, reject) => {
@@ -40,15 +76,21 @@ const MedicalHistoryModel = {
       });
     });
   },
+  */
 
+  /*
+  SELECT mh.*, d.*, c.*
+        FROM medical_history mh
+        JOIN doctors d ON mh.doctor_id = d.id
+        JOIN clients c ON mh.patient_id = c.id
+        WHERE mh.appointment_id = ?`
+  */
   // Obtener un historial médico por ID
   getMedicalHistoryByAppointmentId: (appointment_id) => {
     return new Promise((resolve, reject) => {
       const query = `
-        SELECT mh.*, d.*, c.*
-        FROM medical_history mh
-        JOIN doctors d ON mh.doctor_id = d.id
-        JOIN clients c ON mh.patient_id = c.id
+        SELECT mh.* 
+        FROM medical_history mh 
         WHERE mh.appointment_id = ?`;
         //JOIN clients c ON mh.patient_id = c.id
         

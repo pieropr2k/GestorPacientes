@@ -209,6 +209,7 @@ export const verifyToken = async (req, res) => {
             first_name: userFound.first_name,
             last_name: userFound.last_name,
             email: userFound.email,
+            role: userFound.role
         });
     } catch (err) {
         return res.sendStatus(401);
@@ -216,10 +217,19 @@ export const verifyToken = async (req, res) => {
 };
 
 export const logout = (req, res) => {
+    /*
     res.cookie("token", "", {
         httpOnly: true,
         secure: true,
         expires: new Date(0),
     });
+    */
+    res.cookie("token", "", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // Solo 'secure' en producción
+        expires: new Date(0),
+        sameSite: 'Strict', // Puede ser útil para evitar problemas de cross-site
+    });
+
     return res.sendStatus(200);
 };

@@ -21,6 +21,7 @@
     "mern-tasks": "file:",
     "mongoose": "^7.2.2",
     "morgan": "^1.10.0",
+    "openai": "^4.73.1",
     "pacient-system": "file:",
     "sqlite3": "^5.1.7",
     "zod": "^3.21.4"

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useMedicalHistory } from "../../context/medicalHistoryContext";
 
 // Simulación de datos de registros médicos (estos normalmente provendrían de una base de datos o API)
 const medicalRecords = [
@@ -31,9 +32,18 @@ const medicalRecords = [
 function MedicalRecords() {
   const [selectedRecord, setSelectedRecord] = useState(null);
 
+  //const {appointments, getAppointments} = useAppointments();
+  const { medicalHistories, getAllMedicalHistories } = useMedicalHistory();
+  useEffect(() => {
+    getAllMedicalHistories();
+    //getAppointments();
+  }, []);
+
+  //console.log(medicalHistories);
+
   const handleViewRecord = (recordId) => {
     // Simula abrir los detalles del registro médico
-    setSelectedRecord(medicalRecords.find((record) => record.id === recordId));
+    setSelectedRecord(medicalHistories.find((record) => record.id === recordId));
   };
 
   return (
@@ -47,7 +57,7 @@ function MedicalRecords() {
       <div className="flex flex-col items-center p-6">
         <div className="w-full max-w-4xl bg-white p-6 rounded-lg shadow-lg">
           <h3 className="text-xl font-semibold text-blue-900 mb-6">Registros de Pacientes</h3>
-          
+
           {/* Tabla de Registros Médicos */}
           <table className="w-full table-auto">
             <thead>
@@ -59,21 +69,23 @@ function MedicalRecords() {
               </tr>
             </thead>
             <tbody>
-              {medicalRecords.map((record) => (
-                <tr key={record.id} className="border-b hover:bg-gray-50">
-                  <td className="py-3 px-4">{record.patientName}</td>
-                  <td className="py-3 px-4">{record.diagnosis}</td>
-                  <td className="py-3 px-4">{record.date}</td>
-                  <td className="py-3 px-4 text-blue-600 cursor-pointer">
-                    <button
-                      onClick={() => handleViewRecord(record.id)}
-                      className="bg-blue-600 text-white py-1 px-4 rounded hover:bg-blue-700"
-                    >
-                      Ver Detalles
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {
+                //medicalRecords.map((record) => (
+                medicalHistories.map((record) => (
+                  <tr key={record.id} className="border-b hover:bg-gray-50">
+                    <td className="py-3 px-4">{record.patient}</td>
+                    <td className="py-3 px-4">{record.diagnosis}</td>
+                    <td className="py-3 px-4">{record.date}</td>
+                    <td className="py-3 px-4 text-blue-600 cursor-pointer">
+                      <button
+                        onClick={() => handleViewRecord(record.id)}
+                        className="bg-blue-600 text-white py-1 px-4 rounded hover:bg-blue-700"
+                      >
+                        Ver Detalles
+                      </button>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -86,7 +98,7 @@ function MedicalRecords() {
             <h3 className="text-2xl font-semibold text-blue-900 mb-4">Detalles del Registro</h3>
             <div className="space-y-4">
               <div>
-                <strong>Paciente:</strong> {selectedRecord.patientName}
+                <strong>Paciente:</strong> {selectedRecord.patient}
               </div>
               <div>
                 <strong>Diagnóstico:</strong> {selectedRecord.diagnosis}
@@ -96,11 +108,18 @@ function MedicalRecords() {
               </div>
               <div>
                 <strong>Notas Médicas:</strong>
-                <textarea
-                  rows="4"
-                  className="w-full p-2 border border-gray-300 rounded mt-2"
-                  placeholder="Agregar notas o comentarios"
-                ></textarea>
+                <ul className="mt-2 space-y-2">
+                  {
+                    selectedRecord.notes 
+                  ? selectedRecord.notes.map((item, index) => (
+                    <li key={index} className="flex justify-between items-center bg-gray-200 p-2 rounded">
+                      {item}
+                    </li>
+                  ))
+                  : null
+                  }
+                </ul>
+
               </div>
             </div>
             <div className="flex justify-end mt-4">

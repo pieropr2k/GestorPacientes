@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAppointments } from "../../context/appointmentsContext";
 
 function AppointmentDetailsGestor() {
   const params = useParams();
+  const navigate = useNavigate();
+
+
   const { getAppointmentById, updateAppointment } = useAppointments();
 
   console.log(params.id)
@@ -43,6 +46,8 @@ function AppointmentDetailsGestor() {
           const report = appointmentData.medical_report;
           setDiagnosis(report.diagnosis);
           setTreatment(report.treatment);
+          //console.log(report.notes) 
+
           setNotes(report.notes ? report.notes : []);
         }
 
@@ -59,6 +64,15 @@ function AppointmentDetailsGestor() {
     if (newNote) {
       setNotes((prev) => [...prev, newNote]);
       setNewNote("");
+    }
+  };
+
+  const handleDeleteNote = (itemToDelete) => {
+    const index = notes.indexOf(itemToDelete); // Encuentra el índice del elemento
+    if (index !== -1) {
+      const updatedItems = [...notes]; // Crea una copia del arreglo
+      updatedItems.splice(index, 1); // Elimina el elemento en ese índice
+      setNotes(updatedItems); // Actualiza el estado
     }
   };
 
@@ -110,10 +124,21 @@ function AppointmentDetailsGestor() {
           {/* Notas Médicas */}
           <div className="mb-6">
             <label className="block text-sm font-semibold text-gray-700 mb-2">Notas Médicas:</label>
-            <ul className="list-disc pl-5 text-sm text-gray-700">
-              {notes.map((note, index) => (
-                <li key={index} className="mb-2">{note}</li>
-              ))}
+            <ul className="list-disc text-sm text-gray-700 mb-3">
+              {
+                notes.map((note, index) => (
+                  <li key={index} className="flex justify-between items-center bg-gray-200 my-2 p-2 rounded">
+                    {note}
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteNote(note)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      Remove
+                    </button>
+                  </li>
+                ))
+              }
             </ul>
 
             {/* Nueva nota */}
@@ -179,6 +204,7 @@ function AppointmentDetailsGestor() {
     } else {
       console.log(preDateJson);
     }
+    //navigate('/doctor/medical-records');
   };
 
   return (
@@ -244,14 +270,16 @@ function AppointmentDetailsGestor() {
       </div>
 
       {/* Registrar en historial */}
-      {status !== "No Asistió" && (
+
+      <Link to="/doctor/medical-records" className="hover:underline">
+
         <button
           onClick={registerAppointmentInfo}
           className="mt-6 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
         >
           Registrar en el historial
         </button>
-      )}
+      </Link>
     </div>
   );
 

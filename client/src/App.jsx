@@ -24,6 +24,7 @@ import AppointmentDetailsGestor from "./pages/doctor/AppointmentDetailsGestor";
 import HealthWithAI from "./pages/pacient/HealthWithAI";
 import AppointmentWithAI from "./pages/doctor/AppointmentWithAI";
 import MedicalRecords from "./pages/doctor/MedicalRecords";
+import { MedicalHistoryProvider } from "./context/medicalHistoryContext";
 
 function App() {
   //<DoctorProvider>
@@ -31,41 +32,43 @@ function App() {
   return (
     <AuthProvider>
       <DoctorProvider>
-        <AppointmentProvider>
-          <BrowserRouter>
-            <Routes>
-              {/* Rutas públicas */}
-              <Route path="/" element={<HomePage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/register-patient" element={<PacientRegisterForm />} />
+        <MedicalHistoryProvider>
+          <AppointmentProvider>
+            <BrowserRouter>
+              <Routes>
+                {/* Rutas públicas */}
+                <Route path="/" element={<HomePage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/register-patient" element={<PacientRegisterForm />} />
 
-              {/* Rutas para todos excepto doctores */}
-              <Route element={<ProtectedRoute excludedRole={"doctor"} />}>
-                <Route path="/" element={<ClientLayout />}>
-                  <Route path="appointments" element={<AppointmentsPage />} />
-                  <Route path="health-ai" element={<HealthWithAI />} />
-                  <Route path="medical-history" element={<MedicalHistoryPage />} />
-                  <Route path="search-doctor" element={<DoctorsListPage />} />
-                  <Route path="search-doctor/:id" element={<DoctorProfilePage />} />
-                  <Route path="search-doctor/:id/create-appointment" element={<CreateAppointmentForm />} />
+                {/* Rutas para todos excepto doctores */}
+                <Route element={<ProtectedRoute excludedRole={"doctor"} />}>
+                  <Route path="/" element={<ClientLayout />}>
+                    <Route path="appointments" element={<AppointmentsPage />} />
+                    <Route path="health-ai" element={<HealthWithAI />} />
+                    <Route path="medical-history" element={<MedicalHistoryPage />} />
+                    <Route path="search-doctor" element={<DoctorsListPage />} />
+                    <Route path="search-doctor/:id" element={<DoctorProfilePage />} />
+                    <Route path="search-doctor/:id/create-appointment" element={<CreateAppointmentForm />} />
+                  </Route>
                 </Route>
-              </Route>
 
-              {/* Rutas protegidas para doctores */}
-              <Route element={<ProtectedRoute allowedRole={"doctor"} />}>
-                <Route path="/doctor" element={<DoctorLayout />}>
-                  <Route path="appointments-man" element={<AppointmentsManagement />} />
-                  <Route path="medical-records" element={<MedicalRecords />} />
-                  <Route path="appointments" element={<AppointmentsList />} />
-                  <Route path="appointments/:id" element={<AppointmentDetailsGestor />} />
-                  <Route path="appointments/:id/with-ai" element={<AppointmentWithAI />} />
+                {/* Rutas protegidas para doctores */}
+                <Route element={<ProtectedRoute allowedRole={"doctor"} />}>
+                  <Route path="/doctor" element={<DoctorLayout />}>
+                    <Route path="appointments-man" element={<AppointmentsManagement />} />
+                    <Route path="medical-records" element={<MedicalRecords />} />
+                    <Route path="appointments" element={<AppointmentsList />} />
+                    <Route path="appointments/:id" element={<AppointmentDetailsGestor />} />
+                    <Route path="appointments/:id/with-ai" element={<AppointmentWithAI />} />
+                  </Route>
                 </Route>
-              </Route>
-            </Routes>
+              </Routes>
 
-          </BrowserRouter>
-        </AppointmentProvider>
+            </BrowserRouter>
+          </AppointmentProvider>
+        </MedicalHistoryProvider>
       </DoctorProvider>
     </AuthProvider>
   );

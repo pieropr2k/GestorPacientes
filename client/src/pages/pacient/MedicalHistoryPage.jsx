@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { saveAs } from "file-saver";
 import { jsPDF } from "jspdf";
+import { useMedicalHistory } from "../../context/medicalHistoryContext";
 
 const medicalHistoryData = [
   {
@@ -47,14 +48,22 @@ const MedicalHistoryPage = () => {
   const [filterDate, setFilterDate] = useState("6months");
   const [filterDiagnosis, setFilterDiagnosis] = useState("");
 
+  const { medicalHistories, getAllMedicalHistories } = useMedicalHistory();
+  useEffect(() => {
+    getAllMedicalHistories();
+    //getAppointments();
+  }, []);
+  console.log(medicalHistories);
+
   const formatDate = (date) => new Date(date).toLocaleDateString("es", { year: "numeric", month: "long", day: "numeric" });
 
-  const filteredData = medicalHistoryData.filter((appointment) => {
+  const filteredData = medicalHistories.filter((appointment) => {
+  //const filteredData = medicalHistoryData.filter((appointment) => {
     const matchDate = filterDate === "6months"
       ? new Date(appointment.date) > new Date(new Date().setMonth(new Date().getMonth() - 6))
       : true;
 
-    const matchDiagnosis = appointment.diagnostico.toLowerCase().includes(filterDiagnosis.toLowerCase());
+    const matchDiagnosis = appointment.diagnosis.toLowerCase().includes(filterDiagnosis.toLowerCase());
 
     return matchDate && matchDiagnosis;
   });
@@ -72,9 +81,9 @@ const MedicalHistoryPage = () => {
     const historyText = filteredData.map((appointment, index) => {
       return `
   Cita: ${formatDate(appointment.date)}
-  Doctor: ${appointment.doctor.nombreCompleto} - ${appointment.doctor.especialidad}
-  Diagnóstico: ${appointment.diagnostico}
-  Estado: ${appointment.estado}
+  Doctor: ${appointment.doctor.name} - ${appointment.doctor.specialty}
+  Diagnóstico: ${appointment.diagnosis}
+  Estado: ${"appointment.estado"}
   ----------------------------------
       `;
     }).join("\n");
@@ -126,6 +135,11 @@ const MedicalHistoryPage = () => {
           </button>
         </div>
 
+        {
+          /*<p className={`text-sm font-semibold ${appointment.estado === "Pendiente de Revisión" ? "text-yellow-500" : "text-green-600"}`}>
+                    Estado: {appointment.estado}
+                  </p> */
+        }
         {/* Listado de Citas */}
         <ul className="space-y-4">
           {filteredData.map((appointment) => (
@@ -133,11 +147,9 @@ const MedicalHistoryPage = () => {
               <div className="flex justify-between items-start">
                 <div>
                   <p className="text-lg font-bold">{formatDate(appointment.date)}</p>
-                  <p className="text-gray-600">{appointment.doctor.nombreCompleto} - {appointment.doctor.especialidad}</p>
-                  <p className="text-gray-700">Diagnóstico: {appointment.diagnostico}</p>
-                  <p className={`text-sm font-semibold ${appointment.estado === "Pendiente de Revisión" ? "text-yellow-500" : "text-green-600"}`}>
-                    Estado: {appointment.estado}
-                  </p>
+                  <p className="text-gray-600">{appointment.doctor.name} - {appointment.doctor.specialty}</p>
+                  <p className="text-gray-700">Diagnóstico: {appointment.diagnosis}</p>
+                  
                 </div>
                 <button
                   onClick={() => handleViewDetails(appointment)}
@@ -157,27 +169,35 @@ const MedicalHistoryPage = () => {
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
             <h3 className="text-xl font-semibold mb-4">Detalles de la Cita</h3>
             <p className="text-gray-700 mb-4">
-              <strong>Diagnóstico:</strong> {selectedAppointment.diagnostico}
+              <strong>Diagnóstico:</strong> {selectedAppointment.diagnosis}
             </p>
             <p className="text-gray-700 mb-4">
-              <strong>Descripción:</strong> {selectedAppointment.detalles.descripcion}
+              <strong>Tratamiento recomendado:</strong> {selectedAppointment.treatment}
+       {
+        /*
+        <p className="text-gray-700 mb-4">
+              <strong>Descripción:</strong> {"selectedAppointment.detalles.descripcion"}
             </p>
-            <p className="text-gray-700 mb-4">
-              <strong>Tratamiento recomendado:</strong>
+
               <ul className="list-disc pl-6">
-                {selectedAppointment.detalles.tratamiento.map((item, index) => (
+                {
+                
+                selectedAppointment.treatment.map((item, index) => (
                   <li key={index}>{item}</li>
-                ))}
+                ))
+                }
               </ul>
+      */
+              }
             </p>
-            <p className="text-gray-700 mb-4">
+            <div className="text-gray-700 mb-4">
               <strong>Notas médicas:</strong>
               <ul className="list-disc pl-6">
-                {selectedAppointment.detalles.notas.map((item, index) => (
+                {selectedAppointment.notes.map((item, index) => (
                   <li key={index}>{item}</li>
                 ))}
               </ul>
-            </p>
+            </div>
             <div className="flex justify-end gap-4">
               <button
                 onClick={() => setShowDetailsModal(false)}

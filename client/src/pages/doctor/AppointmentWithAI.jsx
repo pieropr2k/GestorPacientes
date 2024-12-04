@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useAppointments } from "../../context/appointmentsContext";
+import { useParams } from "react-router-dom";
 
 // Simulación de datos de un paciente y su historial médico (estos datos normalmente provendrían de una API)
 const patient = {
@@ -28,6 +30,26 @@ const medicalHistory = [
 
 function AppointmentWithAI() {
   const [selectedRecord, setSelectedRecord] = useState(null);
+  const [appointmentInfo, setAppointmentInfo] = useState(null);
+  const params = useParams();
+  const { getAppointmentById, updateAppointment } = useAppointments();
+
+
+  useEffect(() => {
+    const getRecipe = async () => {
+      try {
+        console.log(params.id)
+        const appointmentInfo = await getAppointmentById(params.id);
+        setAppointmentInfo(appointmentInfo);
+        console.log(appointmentInfo);
+      } catch (error) {
+        console.log(error)
+      }
+    };
+    getRecipe();
+  }, [])
+  console.log(appointmentInfo, "print");
+
 
   return (
     <div className="flex bg-gray-100">
@@ -37,27 +59,31 @@ function AppointmentWithAI() {
           Información del Paciente
         </h2>
 
+        {medicalHistory && appointmentInfo ? <>
         {/* Información General del Paciente */}
         <div className="mb-4">
-          <div className="text-gray-700 mb-1"><strong>Nombre:</strong> {patient.name}</div>
-          <div className="text-gray-700 mb-1"><strong>Tipo de Documento:</strong> {patient.documentType}</div>
-          <div className="text-gray-700 mb-1"><strong>Número de Documento:</strong> {patient.documentNumber}</div>
+          <div className="text-gray-700 mb-1"><strong>Nombre:</strong> {appointmentInfo.patientName}</div>
+          <div className="text-gray-700 mb-1"><strong>Motivo:</strong> {appointmentInfo.
+            reason}</div>
+          <div className="text-gray-700 mb-1"><strong>Género:</strong> {appointmentInfo.
+            patientGender}</div>
+          <div className="text-gray-700 mb-1"><strong>Número de Documento:</strong> {
+            `${appointmentInfo.patientId}`}</div>
+          <div className="text-gray-700 mb-1"><strong>Dirección:</strong> {patient.address}</div>
           <div className="text-gray-700 mb-1"><strong>Email:</strong> {patient.email}</div>
           <div className="text-gray-700 mb-1"><strong>Teléfono:</strong> {patient.phone}</div>
           <div className="text-gray-700 mb-1"><strong>Fecha de Nacimiento:</strong> {patient.birthday}</div>
-          <div className="text-gray-700 mb-1"><strong>Género:</strong> {patient.gender}</div>
-          <div className="text-gray-700 mb-1"><strong>Dirección:</strong> {patient.address}</div>
+
         </div>
 
         {/* Historial Médico */}
-        <h3 className="text-xl font-semibold text-blue-900 mt-6 mb-4">Historial Médico</h3>
+        <h3 className="text-xl font-semibold text-blue-900 mt-6 mb-4">Historial Médico del Paciente</h3>
         <div className="space-y-4">
           {medicalHistory.map((record, index) => (
             <div
               key={index}
-              className={`p-4 bg-gray-200 rounded-lg cursor-pointer ${
-                selectedRecord === index ? "bg-blue-100" : ""
-              }`}
+              className={`p-4 bg-gray-200 rounded-lg cursor-pointer ${selectedRecord === index ? "bg-blue-100" : ""
+                }`}
               onClick={() => setSelectedRecord(index)}
             >
               <div className="font-semibold">{record.diagnosis}</div>
@@ -66,6 +92,7 @@ function AppointmentWithAI() {
             </div>
           ))}
         </div>
+        </> : <p>Loading...</p>}
 
         {/* Botón Analizar Registro */}
         <button
